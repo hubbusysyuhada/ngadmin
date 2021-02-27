@@ -5,16 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include ('./partials/style')%>
-    <title>login</title>
+    <title>Register New Account</title>
 </head>
-<%- include ('./partials/home_navbar')%>
+<%- include ('./partials/navbar')%>
+    <h1>Register New Account</h1>
+
     <div style="margin-left: auto;margin-right: auto;text-align: center;">
-        <h1>please log in to continue</h1>
-        <% if (query) { %>
-            <p><%= query %></p>
-        <% } %>
-        <form action="/login" method="POST">
+        <form action="/register" method="POST">
             <table style="text-align: center;margin-left: auto;margin-right: auto;width: 20%;" class="table table-hover border border-4">
+                <tr class="border border-4">
+                    <th class="border border-4" style="background-color: black;color: white;">name</th>
+                    <td>
+                        <input type="text" name="name" style="background: transparent;">
+                    </td>
+                </tr>
+                <tr class="border border-4">
+                    <th class="border border-4" style="background-color: black;color: white;">email</th>
+                    <td>
+                        <input type="email" name="email" style="background: transparent;">
+                    </td>
+                </tr>
                 <tr class="border border-4">
                     <th class="border border-4" style="background-color: black;color: white;">username</th>
                     <td>
@@ -28,8 +38,13 @@
                     </td>
                 </tr>
             </table>
-            <button type="submit">Log In</button> 
+            <button type="submit">Register</button>
         </form>
+        <br>
+        <% if (err) { %>
+            <p style="border border-3" > <%= err %> </p>
+        <% } %>
+
     </div>
 </body>
 </html>

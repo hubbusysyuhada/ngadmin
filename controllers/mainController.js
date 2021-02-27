@@ -1,21 +1,19 @@
-const fs = require('fs')
 const {surat_masuk} = require('../models/index')
 
 class MainController {
 
     static home (req, res) {
-        res.render('home')
-    }
-
-    static logIn (req, res) {
-        res.render('login')
+       let session = req.session.currentSession
+       if (session) {
+              console.log(session.name, "<<<<< nama")
+       }
+        res.render('home', {session})
     }
 
     static suratMasuk (req, res) {
 
         surat_masuk.findAll()
         .then((data) => {
-            console.log(data);
             res.render('surat_masuk', {data})
         })
         .catch((err) => {

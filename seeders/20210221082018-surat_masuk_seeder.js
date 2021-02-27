@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: (queryInterface, Sequelize) => {
    let rawData = require('../data/surat_masuk.json')
    let data = []
 
@@ -31,7 +31,7 @@ module.exports = {
 
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: (queryInterface, Sequelize) => {
     return queryInterface.bulkDelete('surat_masuks', null, {});
   }
 };
