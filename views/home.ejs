@@ -7,9 +7,12 @@
     <%- include ('./partials/style') %>
     <title>Document</title>
 </head>
-<body style="background-image: url('../assets/background.png');">
-    <%- include ('./partials/navbar.ejs') %>
+<%- include ('./partials/home_navbar.ejs') %>
 
-    <h1>Selamat datang!</h1>
+    <% if(session) { %>
+        <h1>Selamat datang, <%= session.name %>! </h1>
+        <% } else {%>
+            <h1>Selamat datang!</h1>
+    <% } %>
 </body>
 </html>
