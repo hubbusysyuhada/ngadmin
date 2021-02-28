@@ -12,6 +12,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    getSeksie () {
+      if (!this.disposisi_seksie || this.disposisi_seksie === "") {
+        return "-"
+      } else {
+        return this.disposisi_seksie
+      }
+    }
   };
   surat_masuk.init({
     tanggal: DataTypes.DATE,
@@ -24,10 +32,22 @@ module.exports = (sequelize, DataTypes) => {
     disposisi_seksie: DataTypes.STRING,
     disposisi_staff: DataTypes.STRING,
     catatan: DataTypes.TEXT,
-    nomor_surat: DataTypes.STRING
+    nomor_surat: DataTypes.STRING,
+    isi_disposisi: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'surat_masuk',
+    hooks : {
+      afterFind (instance) {
+        if (instance.disposisi_seksie) {
+          instance.disposisi_seksie = (instance.disposisi_seksie).split(',')
+        }
+
+        if (instance.disposisi_staff) {
+          instance.disposisi_staff = (instance.disposisi_staff).split(',')
+        }
+      }
+    }
   });
   return surat_masuk;
 };

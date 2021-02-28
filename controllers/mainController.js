@@ -10,22 +10,6 @@ class MainController {
         res.render('home', {session})
     }
 
-    static suratMasuk (req, res) {
-
-        surat_masuk.findAll()
-        .then((data) => {
-            res.render('surat_masuk', {data})
-        })
-        .catch((err) => {
-            res.send(err)
-        })
-
-    }
-
-    static undanganMasuk (req, res) {
-        res.render('undangan')
-    }
-
     static suratKeluar (req, res) {
         res.render('surat_keluar')
     }

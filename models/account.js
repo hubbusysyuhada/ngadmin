@@ -68,6 +68,16 @@ module.exports = (sequelize, DataTypes) => {
         let myPlaintextPassword = instance.password
         const hash = bcrypt.hashSync(myPlaintextPassword, salt)
         instance.password = hash
+      },
+      afterFind (instance) {
+        let nama = instance.name
+        let temp = []
+        for (let i = 0; i < nama.length; i++) {
+            temp.push(nama[i])
+        }
+        temp[0] = temp[0].toUpperCase()
+        let capitalize = temp.join('')
+        instance.name = capitalize
       }
     }
   });

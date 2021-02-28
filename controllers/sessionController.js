@@ -19,11 +19,12 @@ class SessionController {
             let pw = req.body.password
             const value = bcrypt.compareSync(pw, pwDB)
             if (data && value) {
-                let cookie = {
+               let cookie = {
                     id : data.id,
                     username : data.username,
                     name : data.name
                 }
+                console.log(cookie);
                 req.session.currentSession = cookie
                 res.render('login_complete', {cookie})
             } else {
