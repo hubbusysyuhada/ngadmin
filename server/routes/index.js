@@ -1,17 +1,17 @@
 const router = require('express').Router()
 const inRouter = require('./inRoutes')
 const outRouter = require('./outRoutes')
-const { MainController, SessionController } = require('../controllers')
+const { MainController, AccountController } = require('../controllers')
 const session = require('../helpers/sessionAuth')
 
 
 router.get('/', MainController.home)
-router.get('/login', SessionController.login)
-router.post('/login', SessionController.checkAccount)
-router.get('/logout', SessionController.logout)
+router.get('/login', AccountController.login)
+router.post('/login', AccountController.checkAccount)
+router.get('/logout', AccountController.logout)
 // router.use(session)
-router.get('/register', SessionController.register)
-router.post('/register', SessionController.storeAccount)
+router.get('/register', AccountController.register)
+router.post('/register', AccountController.storeAccount)
 router.use('/in', inRouter)
 router.use('/out', outRouter)
 

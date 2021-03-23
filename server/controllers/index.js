@@ -1,6 +1,6 @@
 const MainController = require('./mainController')
 const SuratMasukController = require('./suratMasukController')
-const SessionController = require('./sessionController')
+const SessionController = require('./accountController')
 
 module.exports = {
     SuratMasukController,
