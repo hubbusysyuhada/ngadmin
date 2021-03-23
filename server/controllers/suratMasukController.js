@@ -1,4 +1,5 @@
 const {surat_masuk, undangan_masuk} = require('../models')
+const capitalize = require('../helpers/capitalize')
 
 class SuratMasukController {
 
@@ -28,8 +29,8 @@ class SuratMasukController {
             }
         })
         .then(data=> {
-            res.render('detailSurat', {data})
             // res.send(data)
+            res.render('detailSurat', {data})
         })
         .catch(err => {
             res.send (err)

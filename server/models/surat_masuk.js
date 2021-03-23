@@ -39,6 +39,10 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'surat_masuk',
     hooks : {
       afterFind (instance) {
+        if (instance.tujuan) {
+          instance.tujuan = (instance.tujuan).split(',')
+        }
+
         if (instance.disposisi_seksie) {
           instance.disposisi_seksie = (instance.disposisi_seksie).split(',')
         }
