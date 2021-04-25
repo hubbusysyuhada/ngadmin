@@ -1,15 +1,16 @@
-const {SuratMasuk} = require('../models')
+const {UndanganMasuk} = require('../models')
 
-class SuratMasukController {
+class UndanganMasukController {
     static fetchAll (req, res, next) {
         console.log('masuk fetch all');
         const {year} = req.headers
-        SuratMasuk.findAll()
+        UndanganMasuk.findAll()
             .then (data => {
                 data.forEach(surat => {
                     surat.DisposisiSeksie = JSON.parse(surat.DisposisiSeksie)
                     surat.DisposisiStaff = JSON.parse(surat.DisposisiStaff)
                 });
+                console.log(data, '<<< data');
 
                 data = data.filter(surat => surat.Tanggal.includes(String(year)))
                 res.status(200).json(data)
@@ -25,7 +26,7 @@ class SuratMasukController {
 
     static fetchOne (req, res, next) {
         const {id} = req.params
-        SuratMasuk.findByPk(id)
+        UndanganMasuk.findByPk(id)
             .then (data => {
                 data.DisposisiSeksie = JSON.parse(data.DisposisiSeksie)
                 data.DisposisiStaff = JSON.parse(data.DisposisiStaff)
@@ -41,10 +42,10 @@ class SuratMasukController {
             })
     }
 
-    static async newSuratMasuk (req, res, next) {
+    static async newUndanganMasuk (req, res, next) {
         try {
             const {year} = req.headers
-            const arrOfData = await SuratMasuk.findAll({order: [['id', 'DESC']]})
+            const arrOfData = await UndanganMasuk.findAll({order: [['id', 'DESC']]})
             const last = arrOfData.filter(surat => surat.Tanggal.includes(String(year)))[0]
             const answer = {
                 Tanggal: req.body.Tanggal,
@@ -55,10 +56,12 @@ class SuratMasukController {
                 Tujuan: req.body.Tujuan,
                 TanggalSurat: req.body.Tanggal,
                 Perihal: req.body.Perihal,
+                Tempat: req.body.Tempat,
+                Waktu: req.body.Waktu,
                 DisposisiSeksie: "[]",
                 DisposisiStaff: "[]"
             }
-            SuratMasuk.create(answer)
+            UndanganMasuk.create(answer)
                 .then(data => {
                     res.status(201).json({message: 'success!', data})
                 })
@@ -85,11 +88,13 @@ class SuratMasukController {
                 TanggalSurat: req.body.Tanggal,
                 Perihal: req.body.Perihal,
                 Catatan: req.body.Catatan,
+                Tempat: req.body.Tempat,
+                Waktu: req.body.Waktu,
                 IsiDisposisi: req.body.IsiDisposisi,
                 DisposisiSeksie: req.body.DisposisiSeksie,
                 DisposisiStaff: req.body.DisposisiStaff
             }
-            const data = await SuratMasuk.update(answer, {where: {id}, returning:true})
+            const data = await UndanganMasuk.update(answer, {where: {id}, returning:true})
             res.status(200).json(data)
             
         } catch (error) {
@@ -104,7 +109,7 @@ class SuratMasukController {
     static async deleteOne (req, res, next) {
         try {
             const {id} = req.params
-            await SuratMasuk.destroy({where: {id}})
+            await UndanganMasuk.destroy({where: {id}})
             res.status(200).json({message: 'delete success'})
         } catch (error) {
             console.log(error);
@@ -117,4 +122,4 @@ class SuratMasukController {
     }
 }
 
-module.exports = SuratMasukController
+module.exports = UndanganMasukController

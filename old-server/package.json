@@ -1,13 +1,12 @@
 {
-  "name": "server",
+  "name": "ngadmin",
   "version": "1.0.0",
-  "description": "",
+  "description": "administration system",
   "main": "app.js",
   "scripts": {
-    "dev" : "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Muhammad Hafidz Hubbusysyuhada",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

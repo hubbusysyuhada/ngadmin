@@ -1,18 +1,27 @@
+const SuratMasukController = require('../controllers/SuratMasukController')
+const UserController = require('../controllers/UserController')
+const authentication = require('../middlewares/auth')
 const router = require('express').Router()
-const inRouter = require('./inRoutes')
-const outRouter = require('./outRoutes')
-const { MainController, AccountController } = require('../controllers')
-const session = require('../helpers/sessionAuth')
+const errorHandler = require('../middlewares/errorHandler')
+const SuratMasukRouter = require('./suratMasukRoute')
+const UndanganMasukRouter = require('./undanganMasukRoute')
 
+router.get('/', (req, res) => {
+    res.send('Hello World from router!')
+})
 
-router.get('/', MainController.home)
-router.get('/login', AccountController.login)
-router.post('/login', AccountController.checkAccount)
-router.get('/logout', AccountController.logout)
-// router.use(session)
-router.get('/register', AccountController.register)
-router.post('/register', AccountController.storeAccount)
-router.use('/in', inRouter)
-router.use('/out', outRouter)
+// user login and register
+router.post('/login', UserController.login)
+router.post('/register', UserController.register)
+
+router.use(authentication)
+
+// surat masuk
+router.use('/suratmasuk', SuratMasukRouter)
+
+// undangan masuk
+router.use('/undanganmasuk', UndanganMasukRouter)
+
+router.use(errorHandler)
 
 module.exports = router
