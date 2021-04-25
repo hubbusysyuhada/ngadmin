@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include ('./partials/style') %>
+    <title>Document</title>
+</head>
+<%- include ('./partials/navbar.ejs') %>
+    <div id="judul" style="width: 100%;margin: auto;text-align: center;">
+        <h1>Selamat datang!</h1>
+        <h2>ini adalah list surat masuk</h2>
+        <br>
+        <form class="d-flex" style="width: 30%;text-align: center;margin: auto;" method="POST" action="/in/surat">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+          </form>
+    </div>
+    <div style="width: 95%;">
+        <form action="#" style="text-align: right;"><button type="submit" class="btn btn-success">Tambah Data</button></form>
+    </div>
+    <br>
+    <table class="table table-hover border border-4" style="margin-bottom: 50px;width: 90%;margin: auto;">
+        <tr style="text-align: center;background-color: black;"'>
+            <td style="width: 150px;color: white;" class="border border-4">Tanggal</td>
+            <td class="border border-4" style="color: white;">Nomor</td>
+            <!-- <td>Nomor Agenda Direktur</td> -->
+            <td style="width: 150px;color: white;" class="border border-4">Asal Surat</td>
+            <td class="border border-4" style="color: white;">Tujuan</td>
+            <td style="width: 200px;color: white;" class="border border-4">Nomor Surat</td>
+            <td style="width: 150px;color: white;" class="border border-4">Tanggal Surat</td>
+            <td class="border border-4" style="color: white;">Perihal</td>
+            <td style="width: 70px;color: white;" class="border border-4">Seksie</td>
+            <!-- <td>Disposisi Staff</td> -->
+            <!-- <td>Isi Disposisi</td> -->
+            <!-- <td>Catatan</td> -->
+        </tr>
+        <% data.forEach(el => { %>
+            <tr onclick="window.location='/in/surat/<%= el.id %>';">
+                <td class="border border-secondary"> <%= el.tanggal %> </td>
+                <td class="border border-secondary"> <%= el.id %> </td>
+                <!-- <td> <%= el.nomor_agenda_direktur %> </td> -->
+                <td class="border border-secondary"> <%= el.asal_surat %> </td>
+                <td class="border border-secondary"> <%= el.tujuan %> </td>
+                <td class="border border-secondary"> <%= el.nomor_surat %> </td>
+                <td class="border border-secondary"> <%= el.tanggal_surat %> </td>
+                <td class="border border-secondary"> <%= el.perihal %> </td>
+                <td class="border border-secondary"> <%= el.getSeksie() %> </td>
+                <!-- <td> <%= el.disposisi_staff %> </td> -->
+                <!-- <td> <%= el.isi_disposisi %> </td> -->
+                <!-- <td> <%= el.catatan %> </td> -->
+            </tr>
+            <% }) %>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include ('./partials/style')%>
+    <title>login</title>
+</head>
+<%- include ('./partials/home_navbar')%>
+    <div style="margin-left: auto;margin-right: auto;text-align: center;">
+        <h1>please log in to continue</h1>
+        <% if (query) { %>
+            <p><%= query %></p>
+        <% } %>
+        <form action="/login" method="POST">
+            <table style="text-align: center;margin-left: auto;margin-right: auto;width: 20%;" class="table table-hover border border-4">
+                <tr class="border border-4">
+                    <th class="border border-4" style="background-color: black;color: white;">username</th>
+                    <td>
+                        <input type="text" name="username" style="background: transparent;">
+                    </td>
+                </tr>
+                <tr>
+                    <th class="border border-4" style="background-color: black;color: white;">password</th>
+                    <td>
+                        <input type="password" name="password" style="background: transparent;">
+                    </td>
+                </tr>
+            </table>
+            <button type="submit" class="btn btn-primary">Log In</button> 
+        </form>
+    </div>
+</body>
+</html>
