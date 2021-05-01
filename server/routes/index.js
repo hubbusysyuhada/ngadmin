@@ -1,10 +1,11 @@
-const SuratMasukController = require('../controllers/SuratMasukController')
 const UserController = require('../controllers/UserController')
 const authentication = require('../middlewares/auth')
 const router = require('express').Router()
 const errorHandler = require('../middlewares/errorHandler')
 const SuratMasukRouter = require('./suratMasukRoute')
 const UndanganMasukRouter = require('./undanganMasukRoute')
+const SPTRouter = require('./SPTKeluarRouter')
+const SuratKeluarRouter = require('./SuratKeluarRouter')
 
 router.get('/', (req, res) => {
     res.send('Hello World from router!')
@@ -21,6 +22,12 @@ router.use('/suratmasuk', SuratMasukRouter)
 
 // undangan masuk
 router.use('/undanganmasuk', UndanganMasukRouter)
+
+// SPT keluar
+router.use('/spt', SPTRouter)
+
+// surat keluar
+router.use('/suratkeluar', SuratKeluarRouter)
 
 router.use(errorHandler)
 
