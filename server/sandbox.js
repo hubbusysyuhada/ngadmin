@@ -30,3 +30,4 @@ arrOfObj.forEach(el => {
     // if (el.name.includes('yayuk')) temp.push(el)
 })
 console.log(temp);
+console.log(new Date());

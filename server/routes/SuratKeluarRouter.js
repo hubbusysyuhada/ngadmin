@@ -1,11 +1,13 @@
-const SuratMasukController = require('../controllers/SuratMasukController')
+const {SuratKeluarController} = require('../controllers/suratKeluarController')
 const router = require('express').Router()
 
-// surat masuk
-router.get('/', SuratMasukController.fetchAll)
-router.get('/:id', SuratMasukController.fetchOne)
-router.put('/:id', SuratMasukController.editOne)
-router.post('/new', SuratMasukController.newSuratMasuk)
+// Surat Keluar
+router.get('/', SuratKeluarController.fetchAll)
+router.get('/:id', SuratKeluarController.fetchOne)
+router.put('/:id', SuratKeluarController.editOne)
+router.post('/new', SuratKeluarController.createNew)
+router.post('/book', SuratKeluarController.bookMany)
+
 // router.delete('/:id', SuratMasukController.deleteOne)
 
 module.exports = router

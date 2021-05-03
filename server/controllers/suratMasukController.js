@@ -1,3 +1,4 @@
+const { changeDateFormat } = require('../helpers/changeDateFormat');
 const {SuratMasuk} = require('../models')
 
 class SuratMasukController {
@@ -47,13 +48,13 @@ class SuratMasukController {
             const arrOfData = await SuratMasuk.findAll({order: [['id', 'DESC']]})
             const last = arrOfData.filter(surat => surat.Tanggal.includes(String(year)))[0]
             const answer = {
-                Tanggal: req.body.Tanggal,
+                Tanggal: changeDateFormat(req.body.Tanggal).serverDate,
                 NoAgendaSubdit: last ? +last.NoAgendaSubdit + 1 : 1,
                 NoAgendaDit: req.body.NoAgendaDit,
                 AsalSurat: req.body.AsalSurat,
                 NomorSurat: req.body.NomorSurat,
                 Tujuan: req.body.Tujuan,
-                TanggalSurat: req.body.Tanggal,
+                TanggalSurat: changeDateFormat(req.body.TanggalSurat).serverDate,
                 Perihal: req.body.Perihal,
                 DisposisiSeksie: "[]",
                 DisposisiStaff: "[]"
@@ -77,12 +78,12 @@ class SuratMasukController {
         try {
             const {id} = req.params
             const answer = {
-                Tanggal: req.body.Tanggal,
+                Tanggal: changeDateFormat(req.body.Tanggal).serverDate,
                 NoAgendaDit: req.body.NoAgendaDit,
                 AsalSurat: req.body.AsalSurat,
                 NomorSurat: req.body.NomorSurat,
                 Tujuan: req.body.Tujuan,
-                TanggalSurat: req.body.Tanggal,
+                TanggalSurat: changeDateFormat(req.body.TanggalSurat).serverDate,
                 Perihal: req.body.Perihal,
                 Catatan: req.body.Catatan,
                 IsiDisposisi: req.body.IsiDisposisi,

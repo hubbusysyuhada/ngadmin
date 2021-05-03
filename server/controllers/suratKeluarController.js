@@ -1,11 +1,11 @@
-const {SPTKeluar} = require('../models')
+const {SuratKeluar} = require('../models')
 const {changeDateFormat} = require('../helpers/changeDateFormat')
 
-class SPTKeluarController {
+class SuratKeluarController {
     static async fetchAll (req, res, next) {
         try {
             const {year} = req.headers
-            const response = await SPTKeluar.findAll()
+            const response = await SuratKeluar.findAll()
             let temp = response.filter(spt => spt.TanggalSurat.includes(year))
             temp.forEach(spt => {
                 spt.sortingDate = new Date(spt.TanggalSurat)
@@ -26,7 +26,7 @@ class SPTKeluarController {
     static async fetchOne (req, res, next) {
         try {
             const {id} = req.params
-            let response = await SPTKeluar.findByPk(+id)
+            let response = await SuratKeluar.findByPk(+id)
             if (response.Ditujukan) response.Ditujukan = JSON.parse(response.Ditujukan)
             res.status(200).json(response)
         } catch (error) {
@@ -42,22 +42,23 @@ class SPTKeluarController {
     static async editOne (req, res, next) {
         try {
             const {id} = req.params
+            const {type} = req.body
             let answer = {
                 TanggalSurat: req.body.TanggalSurat,
                 NomorSurat: req.body.NomorSurat,
-                Ditujukan: req.body.Ditujukan,
-                DalamRangka: req.body.DalamRangka,
+                Tujuan: req.body.Tujuan,
+                Perihal: req.body.Perihal,
                 Waktu: req.body.Waktu,
                 Tempat: req.body.Tempat,
                 File: req.body.File,
                 PenyusunKonsep: req.body.PenyusunKonsep
             }
-            if (answer.Ditujukan) {
-                answer.Ditujukan = answer.Ditujukan.split(',')
-                answer.Ditujukan = answer.Ditujukan.map(name => name.trim())
-                answer.Ditujukan = JSON.stringify(answer.Ditujukan)
-            }
-            const response = await SPTKeluar.update(answer, {where: {id}, returning: true})
+            let temp = answer.NomorSurat.split('/')
+            temp[0] = temp[0].split('.')
+            const editedDate = answer.TanggalSurat.split('-')
+            answer.NomorSurat = `${type}.${temp[0][1]}/REN/SUBDIT-PWAP/${editedDate[1]}/${editedDate[0]}`
+            answer.TanggalSurat = changeDateFormat(answer.TanggalSurat).serverDate
+            const response = await SuratKeluar.update(answer, {where: {id}, returning: true})
             res.status(200).json(response)
         } catch (error) {
             console.log(error, '<<< error')
@@ -69,9 +70,9 @@ class SPTKeluarController {
         }
     }
 
-    static async newSPT (req, res, next) {
+    static async createNew (req, res, next) {
         try {
-            const last = await SPTKeluar.findAll({order: [['id', 'DESC']], limit: 1})
+            const last = await SuratKeluar.findAll({order: [['id', 'DESC']], limit: 1})
             let lastNumber = last[0].NomorSurat
             let newNumber;
             if (isNaN(+lastNumber)) {
@@ -86,8 +87,8 @@ class SPTKeluarController {
             let answer = {
                 TanggalSurat: req.body.TanggalSurat,
                 NomorSurat: '',
-                Ditujukan: req.body.Ditujukan,
-                DalamRangka: req.body.DalamRangka,
+                Tujuan: req.body.Tujuan,
+                Perihal: req.body.Perihal,
                 Waktu: req.body.Waktu,
                 Tempat: req.body.Tempat,
                 File: req.body.File,
@@ -99,13 +100,10 @@ class SPTKeluarController {
                 message: 'bad request'
             })
             const formattedDate = changeDateFormat(answer.TanggalSurat)
-            answer.NomorSurat = `ST.${newNumber}/REN/SUBDIT-PWAP/${formattedDate.month}/${formattedDate.year}`
-            // if (answer.Ditujukan) {
-            //     answer.Ditujukan = answer.Ditujukan.split(',')
-            //     answer.Ditujukan = answer.Ditujukan.map(name => name.trim())
-            //     answer.Ditujukan = JSON.stringify(answer.Ditujukan)
-            // }
-            const response = await SPTKeluar.create(answer)
+            const {type} = req.body
+            answer.NomorSurat = `${type}.${newNumber}/REN/SUBDIT-PWAP/${formattedDate.month}/${formattedDate.year}`
+            answer.TanggalSurat = formattedDate.serverDate
+            const response = await SuratKeluar.create(answer)
             res.status(201).json(response)
         } catch (error) {
             console.log(error, '<<< error')
@@ -118,17 +116,11 @@ class SPTKeluarController {
         }
     }
     
-    static async bookSPT (req, res, next) {
+    static async bookMany (req, res, next) {
         try {
-            let {ammount, TanggalSurat} = req.body
-            console.log(ammount, '<<< ammount');
-            const formattedDate = new Date(`${TanggalSurat} 12:00:00`)
-            const year = formattedDate.getFullYear()
-            let month = formattedDate.getMonth()  + 1
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-            TanggalSurat = `${formattedDate.getDate()} ${months[month - 1]} ${year}`
-            if (month < 10) month = '0' + month
-            const last = await SPTKeluar.findAll({order: [['id', 'DESC']], limit: 1})
+            let {ammount, TanggalSurat, type} = req.body
+            const formattedDate = changeDateFormat(TanggalSurat)
+            const last = await SuratKeluar.findAll({order: [['id', 'DESC']], limit: 1})
             let lastNumber = last[0].NomorSurat
             if (isNaN(+lastNumber)) {
                 let temp = lastNumber.split('/')
@@ -140,10 +132,10 @@ class SPTKeluarController {
                 let newNumber = lastNumber + i + 1
                 if (newNumber < 10) newNumber = '0' + newNumber
                 let temp = {
-                    TanggalSurat,
-                    NomorSurat: `ST.${newNumber}/REN/SUBDIT-PWAP/${month}/${year}`,
-                    Ditujukan: '',
-                    DalamRangka: '',
+                    TanggalSurat: formattedDate.serverDate,
+                    NomorSurat: `${type}.${newNumber}/REN/SUBDIT-PWAP/${formattedDate.month}/${formattedDate.year}`,
+                    Tujuan: '',
+                    Perihal: '',
                     Waktu: '',
                     Tempat: '',
                     File: '',
@@ -151,7 +143,7 @@ class SPTKeluarController {
                 }
                 answer.push(temp)
             }
-            const response = await SPTKeluar.bulkCreate(answer)
+            const response = await SuratKeluar.bulkCreate(answer)
             res.status(201).json(response)
         } catch (error) {
             console.log(error, '<<<< error')
@@ -165,5 +157,5 @@ class SPTKeluarController {
 }
 
 module.exports = {
-    SPTKeluarController
+    SuratKeluarController
 }

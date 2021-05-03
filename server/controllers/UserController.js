@@ -5,7 +5,7 @@ const {encoding} = require('../helpers/jwt')
 class UserController {
     static login (req, res, next) {
         const {username, password} = req.body
-        console.log(username, password, '<<<<< uname dan pw');
+        // console.log(username, password, '<<<<< uname dan pw');
         User.findOne({where: {username}})
         .then(data => {
             const check = bcrypt.compareSync(password, data.password)
@@ -15,14 +15,14 @@ class UserController {
                 } else {
                     throw err
                 }
+        })
+        .catch(err => {
+            next({
+                name: 'custom error',
+                code: 400,
+                message: 'invalid username/password'
             })
-            .catch(err => {
-                next({
-                    name: 'custom error',
-                    code: 400,
-                    message: 'invalid username/password'
-                })
-            })
+        })
     }
     
     static register (req, res, next) {
