@@ -1,15 +1,7 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+import reducers from './reducers'
 
-Vue.use(Vuex)
+const store = createStore(reducers, applyMiddleware(thunk))
 
-export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+export default store
