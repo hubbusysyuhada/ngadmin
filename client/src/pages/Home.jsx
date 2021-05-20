@@ -1,0 +1,221 @@
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import {
+    Typography,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TextField
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux'
+// import { useQuery } from '@apollo/client'
+// import { USER_PROFILE, FETCH_RESTAURANTS } from '../graphql/ApolloQuery'
+// import { useReactiveVar } from '@apollo/client'
+import Navbar from '../components/Navbar'
+// import { state_user, state_restaurants, original } from '../graphql/ApolloConfig'
+import loading_gif from '../assets/loading.gif'
+import Restaurant from '../components/RestaurantRow'
+
+const useStyle = makeStyles({
+    text : {
+        fontFamily: 'monospace'
+    },
+    container : {
+        height: '100vh'
+    },
+    item: {
+        textAlign: 'center',
+    },
+    tableRoot: {
+        width: '90%',
+        textAlign: 'center',
+        margin: 'auto'
+    },
+        tableContainer: {
+        maxHeight: 2000,
+    }
+})
+
+export default function Home () {
+    const user = useSelector(state => state.AuthReducer.loggedUser)
+    const currentTime = new Date()
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri' ,'sat']
+    const today = days[currentTime.getDay()]
+    const timeNow = currentTime.getHours()
+    const style = useStyle()
+    const history = useHistory()
+    const restaurantCache = []
+    // const restaurantCache = useReactiveVar(state_restaurants)
+    // const tempRestaurants = original()
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [filter, setFilter] = useState('')
+    // const restaurants = useQuery(FETCH_RESTAURANTS, {
+    //     context: {
+    //         headers: {
+    //             access_token: localStorage.getItem('access_token')
+    //         }
+    //     }
+    // })
+    // const currentUser = useQuery(USER_PROFILE, {
+    //     context: {
+    //         headers: {
+    //             access_token: localStorage.getItem('access_token')
+    //         }
+    //     }
+    // })
+    useEffect(() => {
+        console.log(localStorage, '<<< localstorage dari home');
+        console.log(user, '<<<< user in state redux from home');
+        if (!localStorage.getItem('access_token')) {
+            history.push('/auth')
+        }
+    }, [])
+
+    useEffect(() => {
+        // if (filter) {
+        //     let filtered = tempRestaurants.filter(resto => resto.name.toLowerCase().includes(filter.toLowerCase()) || resto.status.toLowerCase().includes(filter.toLowerCase()))
+        //     state_restaurants(filtered)
+        // } else {
+        //     state_restaurants(tempRestaurants)
+        // }
+    }, [filter])
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+    // if (JSON.stringify(state_user()) === JSON.stringify({user: {}}) || !state_user()) {
+    //     state_user(currentUser.data)
+    // }
+
+    // useEffect(() => {
+    //     if (restaurants.data) {
+    //         let tempArr = []
+    //         for (let i = 0; i < restaurants.data.restaurants.length; i++) {
+    //             let temp = {
+    //                 ...restaurants.data.restaurants[i]
+    //             }
+    //             const resto = restaurants.data.restaurants[i]
+    //             let checker = true
+    //             if (resto) {
+    //                 let operatingHour = resto.operationHours.split(' - ')
+    //                 if (resto.offDays.includes(today)) {
+    //                     checker = false
+    //                 }
+    //                 for (let j = 0; j < operatingHour.length; j++) {
+    //                     if (operatingHour[j].includes('am')) operatingHour[j] = +(operatingHour[j].replace('am', ''))
+    //                     else {
+    //                         operatingHour[j] = +(operatingHour[j].replace('pm', ''))
+    //                         operatingHour[j] += 12
+    //                     }
+    //                 }
+    //                 if (timeNow < operatingHour[0] || timeNow >= operatingHour[1]) checker = false
+    //                 if (checker) temp.status = 'serving'
+    //                 else temp.status = 'closed'
+    //                 tempArr.push(temp)
+    //             }
+    //         }
+    //         original(tempArr)
+    //         state_restaurants(tempArr)
+    //     }
+    // }, [restaurants.data])
+
+    return (
+        <div>
+            <Grid container spacing={3} className={style.container}>
+                <Grid item xs={2}>
+                    <div>
+                        <Navbar/>
+                    </div>
+                </Grid>
+                <Grid item xs={10} className={style.item}>
+                    <div style={{marginTop: '10px'}}>
+                        <Typography variant="h2" className={style.text}>
+                            Our Restaurants
+                        </Typography>
+                        <br/>
+                        <>
+                                <div style={{textAlign: 'left', width: '100%', marginLeft: '4%', marginBottom: '10px', marginTop: '0'}}>
+                                    <TextField label="looking for something?" size="small" style={{width: '300px', margin: '20px', textAlign: 'left'}} onChange={(e) => setFilter(e.target.value)}/>
+                                    <br/>
+                                </div>
+                                <Paper className={style.tableRoot}>
+                                    <TableContainer className={style.tableContainer}>
+                                        <Table stickyHeader aria-label="sticky table">
+                                            <TableHead>
+                                            <TableRow>
+                                                <TableCell
+                                                    align={'right'}
+                                                    style={{ width: '10%', textAlign: 'center' }}
+                                                >
+                                                    No.
+                                                </TableCell>
+                                                <TableCell
+                                                    align={'right'}
+                                                    style={{ width: '50%', textAlign: 'left' }}
+                                                >
+                                                    Restaurant Name
+                                                </TableCell>
+                                                <TableCell
+                                                    align={'right'}
+                                                    style={{ width: '20%', textAlign: 'right' }}
+                                                >
+                                                    Opening Hour
+                                                </TableCell>
+                                                <TableCell
+                                                    align={'right'}
+                                                    style={{ width: '0%', textAlign: 'left' }}
+                                                ></TableCell>
+                                            </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {restaurantCache ? (rowsPerPage > 0 ? restaurantCache.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                :
+                                                restaurantCache).map((resto, index) => {
+                                                    return (
+                                                        <Restaurant props={resto} />
+                                                     )
+                                                }): ''}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <TablePagination
+                                    rowsPerPageOptions={[10]}
+                                    component="div"
+                                    count={restaurantCache ? restaurantCache.length : 0}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onChangePage={handleChangePage}
+                                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                                    />
+                                </Paper>
+                            </>
+                        {/* {currentUser.loading || restaurants.loading ?
+                            <>
+                                <img src={loading_gif} alt="image cannot be shown"/>
+                                <Typography variant="h4" className={style.text}>
+                                    loading...
+                                </Typography>
+                            </>
+                            :   
+                        } */}
+                    </div>
+                </Grid>
+            </Grid>
+        </div>
+    )
+    
+}

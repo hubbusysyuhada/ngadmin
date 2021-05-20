@@ -1,32 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
-import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
-import { USER_LOGIN, FETCH_SURAT_MASUK } from './store/actions'
+import '@fontsource/roboto'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import Auth from './pages/Auth'
+import Home from './pages/Home'
 
 function App() {
-  const dispatch = useDispatch()
-  const user = useSelector(state => state.AuthReducer.loggedUser)
-  useEffect(() => {
-    dispatch(FETCH_SURAT_MASUK())
-  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Switch>
+          <Route path="/auth">
+            <Auth/>
+          </Route>
+          <Route path="/">
+            <Home/>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
