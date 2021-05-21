@@ -71,9 +71,8 @@ export default function Home () {
     //         }
     //     }
     // })
+
     useEffect(() => {
-        console.log(localStorage, '<<< localstorage dari home');
-        console.log(user, '<<<< user in state redux from home');
         if (!localStorage.getItem('access_token')) {
             history.push('/auth')
         }

@@ -16,7 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Logo from '../assets/login.png'
 import { useDispatch, useSelector } from 'react-redux'
 import MuiAlert from '@material-ui/lab/Alert';
-import { TURN_OFF_LOGIN_ERROR, USER_LOGIN } from '../store/actions';
+import { SET_USER, TURN_OFF_LOGIN_ERROR, USER_LOGIN } from '../store/actions';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -74,9 +74,10 @@ export default function Auth () {
     }, [loginError])
 
     useEffect(() => {
-        if (loggedUser.access_token) {
+        if (loggedUser) {
             setOpenSuccess(true)
             setTimeout(() => {
+                setOpenSuccess(false)
                 history.push('/')
             }, 2000)
         }
@@ -92,7 +93,8 @@ export default function Auth () {
     };
 
     useEffect(() => {
-        if (localStorage.getItem('access_token')) {
+        if (localStorage.getItem('access_token') && localStorage.getItem('name') && localStorage.getItem('year')) {
+            if (!loggedUser) dispatch(SET_USER())
             history.push('/')
         }
     }, [])
@@ -176,9 +178,9 @@ export default function Auth () {
                 Invalid Username/Password!
                 </Alert>
             </Snackbar>
-            <Snackbar open={openRegError} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
+            <Snackbar open={openRegError} autoHideDuration={4000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
                 <Alert onClose={handleClose} severity="error">
-                CONTACT ADMIN TO REGISTER YOUR ACCOUNT
+                PLEASE CONTACT ADMIN TO REGISTER YOUR ACCOUNT
                 </Alert>
             </Snackbar>
             <Snackbar open={openSuccess} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>

@@ -10,9 +10,9 @@ export function USER_LOGIN (param) {
             })
             if (data) {
                 dispatch({type: 'auth/login', payload: data})
+                localStorage.setItem('name', data.name)
                 localStorage.setItem('access_token', data.access_token)
                 localStorage.setItem('year', param.year)
-                // history.push('/')
             }
         } catch (error) {
             dispatch({type: 'auth/loginError'})
@@ -34,6 +34,16 @@ export function TURN_OFF_LOGIN_ERROR () {
     }
 }
 
+export function SET_USER () {
+    return (dispatch) => {
+        const {name, access_token} = localStorage
+        const payload = {
+            name,
+            access_token
+        }
+        dispatch({type: 'auth/setUser', payload})
+    }
+}
 
 export function FETCH_SURAT_MASUK () {
     return async (dispatch) => {

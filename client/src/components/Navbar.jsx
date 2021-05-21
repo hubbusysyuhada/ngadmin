@@ -8,7 +8,7 @@ import RestorePageTwoToneIcon from '@material-ui/icons/RestorePageTwoTone';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 import ExitToAppTwoToneIcon from '@material-ui/icons/ExitToAppTwoTone';
 import { useHistory, useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { USER_LOGOUT } from '../store/actions'
 // import { state_user } from '../graphql/ApolloConfig'
 import textLogo from '../assets/chefschoice-text.png'
@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function VerticalTabs() {
+    const loggedUser = useSelector(state => state.AuthReducer.loggedUser)
     const dispatch = useDispatch()
     const location = useLocation().pathname
     const history = useHistory()
@@ -112,9 +113,17 @@ export default function VerticalTabs() {
                         popup: 'animate__animated animate__fadeOutUp'
                       }
                 })
+                // console.log(dispatch, '<<<< dispatch');
+                // console.log(loggedUser, '<<< logged user setelah logout 117');
+                // console.log(dispatch(USER_LOGOUT), '<<< dispatch user logout');
+                // console.log(loggedUser, '<<< logged user setelah logout 119');
+                // console.log(dispatch(USER_LOGOUT()), '<<< dispatch user logout()');
+                // console.log(loggedUser, '<<< logged user setelah logout 121');
                 dispatch(USER_LOGOUT())
+                console.log(loggedUser, '<<< logged user setelah logout 123');
                 localStorage.removeItem('access_token')
                 localStorage.removeItem('year')
+                localStorage.removeItem('name')
                 history.push('/auth')
             }
         })
