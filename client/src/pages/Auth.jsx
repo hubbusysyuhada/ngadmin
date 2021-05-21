@@ -185,7 +185,7 @@ export default function Auth () {
             </Snackbar>
             <Snackbar open={openSuccess} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
                 <Alert onClose={handleClose} severity="success">
-                Login Success! Redirecting...
+                Welcome {localStorage.getItem('name')}! Redirecting...
                 </Alert>
             </Snackbar>
         </div>

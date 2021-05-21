@@ -1,6 +1,6 @@
 const {User} = require('../models')
 const bcrypt = require('bcryptjs')
-const {encoding} = require('../helpers/jwt')
+const { encoding, decoding } = require('../helpers/jwt')
 
 class UserController {
     static login (req, res, next) {
@@ -41,6 +41,26 @@ class UserController {
             .catch(err => {
                 res.status(500).json(err)
             })
+    }
+
+    static async getAllUsers(req, res, next) {
+        const {username, name} = req.loggedUser
+        if (username !== 'admin' && name !== 'admin') next({
+            name: 'custom error',
+            code: 401,
+            message: 'unauthorized'
+        })
+        const data = await User.findAll()
+        let temp = []
+        data.forEach(userDB => {
+            if (userDB.username !== 'admin') {
+                temp.push({
+                    username: userDB.username,
+                    name: userDB.name
+                })
+            }
+        });
+        res.status(200).json({data: temp})
     }
 }
 

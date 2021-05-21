@@ -47,13 +47,13 @@ export function SET_USER () {
 
 export function FETCH_SURAT_MASUK () {
     return async (dispatch) => {
-        const {data} = await axios({
-            method: 'GET',
-            url: `${baseUrl}suratmasuk`,
+        const {data} = await axios.get('/suratmasuk', {
             headers: {
-                year: 2021,
-                access_token : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTYxOTkyNjM5OH0.A5KeUT7uHTFF2V0Sp1fT5lWhqcQB6WwhbS_4U606Bck'
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
             }
         })
+        console.log(data, '<<<< data surat masuk');
+        dispatch({type: 'suratmasuk/fetch', payload: data})
     }
 }

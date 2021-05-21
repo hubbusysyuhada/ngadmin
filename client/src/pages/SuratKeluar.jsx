@@ -14,7 +14,7 @@ import {
     TextField
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 // import { useQuery } from '@apollo/client'
 // import { USER_PROFILE, FETCH_RESTAURANTS } from '../graphql/ApolloQuery'
 // import { useReactiveVar } from '@apollo/client'
@@ -22,6 +22,7 @@ import Navbar from '../components/Navbar'
 // import { state_user, state_restaurants, original } from '../graphql/ApolloConfig'
 import loading_gif from '../assets/loading.gif'
 import Restaurant from '../components/RestaurantRow'
+import { FETCH_SURAT_MASUK, SET_USER } from '../store/actions';
 
 const useStyle = makeStyles({
     text : {
@@ -43,7 +44,8 @@ const useStyle = makeStyles({
     }
 })
 
-export default function Home () {
+export default function SuratKeluar () {
+    const dispatch = useDispatch()
     const user = useSelector(state => state.AuthReducer.loggedUser)
     const currentTime = new Date()
     const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri' ,'sat']
@@ -52,29 +54,15 @@ export default function Home () {
     const style = useStyle()
     const history = useHistory()
     const restaurantCache = []
-    // const restaurantCache = useReactiveVar(state_restaurants)
-    // const tempRestaurants = original()
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [filter, setFilter] = useState('')
-    // const restaurants = useQuery(FETCH_RESTAURANTS, {
-    //     context: {
-    //         headers: {
-    //             access_token: localStorage.getItem('access_token')
-    //         }
-    //     }
-    // })
-    // const currentUser = useQuery(USER_PROFILE, {
-    //     context: {
-    //         headers: {
-    //             access_token: localStorage.getItem('access_token')
-    //         }
-    //     }
-    // })
 
     useEffect(() => {
         if (!localStorage.getItem('access_token')) {
             history.push('/auth')
+        } else {
+            dispatch(FETCH_SURAT_MASUK())
         }
     }, [])
 
@@ -96,42 +84,6 @@ export default function Home () {
         setPage(0);
     };
 
-    // if (JSON.stringify(state_user()) === JSON.stringify({user: {}}) || !state_user()) {
-    //     state_user(currentUser.data)
-    // }
-
-    // useEffect(() => {
-    //     if (restaurants.data) {
-    //         let tempArr = []
-    //         for (let i = 0; i < restaurants.data.restaurants.length; i++) {
-    //             let temp = {
-    //                 ...restaurants.data.restaurants[i]
-    //             }
-    //             const resto = restaurants.data.restaurants[i]
-    //             let checker = true
-    //             if (resto) {
-    //                 let operatingHour = resto.operationHours.split(' - ')
-    //                 if (resto.offDays.includes(today)) {
-    //                     checker = false
-    //                 }
-    //                 for (let j = 0; j < operatingHour.length; j++) {
-    //                     if (operatingHour[j].includes('am')) operatingHour[j] = +(operatingHour[j].replace('am', ''))
-    //                     else {
-    //                         operatingHour[j] = +(operatingHour[j].replace('pm', ''))
-    //                         operatingHour[j] += 12
-    //                     }
-    //                 }
-    //                 if (timeNow < operatingHour[0] || timeNow >= operatingHour[1]) checker = false
-    //                 if (checker) temp.status = 'serving'
-    //                 else temp.status = 'closed'
-    //                 tempArr.push(temp)
-    //             }
-    //         }
-    //         original(tempArr)
-    //         state_restaurants(tempArr)
-    //     }
-    // }, [restaurants.data])
-
     return (
         <div>
             <Grid container spacing={3} className={style.container}>
@@ -143,7 +95,7 @@ export default function Home () {
                 <Grid item xs={10} className={style.item}>
                     <div style={{marginTop: '10px'}}>
                         <Typography variant="h2" className={style.text}>
-                            Our Restaurants
+                            SURAT KELUAR
                         </Typography>
                         <br/>
                         <>

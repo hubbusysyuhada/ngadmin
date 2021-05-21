@@ -9,12 +9,13 @@ import RestaurantIcon from '@material-ui/icons/Restaurant';
 import ExitToAppTwoToneIcon from '@material-ui/icons/ExitToAppTwoTone';
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { USER_LOGOUT } from '../store/actions'
-// import { state_user } from '../graphql/ApolloConfig'
-import textLogo from '../assets/chefschoice-text.png'
-// import { useQuery } from '@apollo/client'
-// import { USER_PROFILE } from '../graphql/ApolloQuery'
+import { USER_LOGOUT, SET_USER } from '../store/actions'
+import textLogo from '../assets/ngadmin-logo.png'
 import Swal from 'sweetalert2'
+import { RiMailSendFill, RiMailDownloadFill } from 'react-icons/ri'
+import { MdInsertInvitation } from 'react-icons/md'
+import { FaTasks, FaUserTie } from 'react-icons/fa'
+import { IconContext } from 'react-icons'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -69,19 +70,18 @@ export default function VerticalTabs() {
     const history = useHistory()
     const classes = useStyles();
     const [value, setValue] = useState(0);
-    // const { client } = useQuery(USER_PROFILE, {
-    //     context: {
-    //         headers: {
-    //             access_token: localStorage.getItem('access_token')
-    //         }
-    //     }
-    // })
-
+    
     useEffect(() => {
-        if (location === '/cart') setValue(1)
-        else if (location === '/history') setValue(2)
-        else setValue(0)
+      if (location === '/suratmasuk') setValue(0)
+      else if (location === '/undanganmasuk') setValue(1)
+      else if (location === '/suratkeluar') setValue(2)
+      else if (location === '/spt') setValue(3)
+      else if (location === '/user') setValue(4)
+      else setValue(0)
+      if (!loggedUser) dispatch(SET_USER())
+      console.log(loggedUser, '<<< loggedUser');
     }, [])
+    
 
     const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -113,12 +113,6 @@ export default function VerticalTabs() {
                         popup: 'animate__animated animate__fadeOutUp'
                       }
                 })
-                // console.log(dispatch, '<<<< dispatch');
-                // console.log(loggedUser, '<<< logged user setelah logout 117');
-                // console.log(dispatch(USER_LOGOUT), '<<< dispatch user logout');
-                // console.log(loggedUser, '<<< logged user setelah logout 119');
-                // console.log(dispatch(USER_LOGOUT()), '<<< dispatch user logout()');
-                // console.log(loggedUser, '<<< logged user setelah logout 121');
                 dispatch(USER_LOGOUT())
                 console.log(loggedUser, '<<< logged user setelah logout 123');
                 localStorage.removeItem('access_token')
@@ -133,6 +127,7 @@ export default function VerticalTabs() {
     <div className={classes.root}>
             <img src={textLogo} alt="image cannot be shown" style={{width: '180px', textAlign: 'center', margin: 'auto'}}/>
         <div>
+          <IconContext.Provider value={{ size: '23px' }}>
             <Tabs
                 orientation="vertical"
                 variant="scrollable"
@@ -142,58 +137,112 @@ export default function VerticalTabs() {
                 className={classes.tabs}
             >
                 <Button
-                style={{margin: '10px',
-                textAlign: 'left',
-                fontFamily: 'monospace',
-                paddingLeft: '7%'
+                style={{
+                  margin: '10px',
+                  textAlign: 'left',
+                  justifyContent: 'flex-start',
+                  fontFamily: 'monospace',
+                  paddingLeft: '15%',
+                  marginTop: '20px'
                 }}
                 onClick={() => {
                     setValue(0)
-                    history.push('/')
+                    history.push('/suratmasuk')
                 }}
                 >
-                    {<RestaurantIcon/>} HOME
+                    {<RiMailDownloadFill/>} <span style={{marginLeft: '15px'}}>SURAT MASUK</span>
                 </Button>
                 <Button
-                style={{margin: '10px',
-                textAlign: 'left',
-                fontFamily: 'monospace',
-                paddingLeft: '7%'
+                style={{
+                  margin: '10px',
+                  textAlign: 'left',
+                  justifyContent: 'flex-start',
+                  fontFamily: 'monospace',
+                  paddingLeft: '15%'
                 }}
                 onClick={() => {
                     setValue(1)
-                    history.push('/cart')
+                    history.push('/undanganmasuk')
                 }}
                 >
-                    {<ShoppingCartTwoToneIcon/>} CART
+                    {<MdInsertInvitation/>} <span style={{marginLeft: '15px'}}>UNDANGAN MASUK</span>
                 </Button>
                 <Button
-                style={{margin: '10px',
-                textAlign: 'left',
-                fontFamily: 'monospace',
-                paddingLeft: '18%'
+                style={{
+                  margin: '10px',
+                  textAlign: 'left',
+                  justifyContent: 'flex-start',
+                  fontFamily: 'monospace',
+                  paddingLeft: '15%'
                 }}
                 onClick={() => {
                     setValue(2)
-                    history.push('/history')
+                    history.push('/suratkeluar')
                 }}
                 >
-                    {<RestorePageTwoToneIcon/>} HISTORY
+                    {<RiMailSendFill/>} <span style={{marginLeft: '15px'}}>SURAT KELUAR</span>
                 </Button>
                 <Button
-                style={{margin: '10px',
-                textAlign: 'left',
-                fontFamily: 'monospace',
-                marginTop: '230%',
-                paddingLeft: '15%',
-                // position: 'relative',
-                // bottom: 0
+                style={{
+                  margin: '10px',
+                  textAlign: 'left',
+                  justifyContent: 'flex-start',
+                  fontFamily: 'monospace',
+                  paddingLeft: '15%'
+                }}
+                onClick={() => {
+                    setValue(3)
+                    history.push('/spt')
+                }}
+                >
+                  {<FaTasks/>} <span style={{marginLeft: '15px'}}>SPT</span>
+                </Button>
+                { loggedUser ? loggedUser.name === 'admin' ? 
+                <Button
+                style={{
+                  margin: '10px',
+                  textAlign: 'left',
+                  justifyContent: 'flex-start',
+                  fontFamily: 'monospace',
+                  paddingLeft: '15%'
+                }}
+                onClick={() => {
+                    setValue(4)
+                    history.push('/user')
+                }}
+                >
+                  {<FaUserTie/>} <span style={{marginLeft: '15px'}}>USER</span>
+                </Button>
+                :
+                <Button
+                style={{
+                  margin: '10px',
+                  textAlign: 'left',
+                  justifyContent: 'flex-start',
+                  fontFamily: 'monospace',
+                  paddingLeft: '15%',
+                  height: '33px'
+                }}
+                disabled
+                />
+                :
+                ''
+                }
+                <Button
+                style={{
+                  margin: '10px',
+                  textAlign: 'left',
+                  justifyContent: 'flex-start',
+                  fontFamily: 'monospace',
+                  paddingLeft: '15%',
+                  marginTop: '170%'
                 }}
                 onClick={logout}
                 >
                     {<ExitToAppTwoToneIcon/>} LOGOUT
                 </Button>
             </Tabs>
+          </IconContext.Provider>
         </div>
     </div>
     );
