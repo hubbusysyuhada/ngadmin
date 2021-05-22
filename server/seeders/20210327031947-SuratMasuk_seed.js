@@ -34,6 +34,13 @@ module.exports = {
       })
     }
 
+    let tempTanggal = temp.Tanggal.split(' ')
+    tempTanggal[1] = tempTanggal[1].toLowerCase()
+    tempTanggal[1] = tempTanggal[1].split('')
+    tempTanggal[1][0] = tempTanggal[1][0].toUpperCase()
+    tempTanggal[1] = tempTanggal[1].join('')
+    temp.Tanggal = tempTanggal.join(' ')
+
     if (temp.DisposisiStaff === '') temp.DisposisiStaff = []
     else {
       temp.DisposisiStaff = temp.DisposisiStaff.split(',')
@@ -45,6 +52,11 @@ module.exports = {
 
     temp.DisposisiSeksie = JSON.stringify(temp.DisposisiSeksie)
     temp.DisposisiStaff = JSON.stringify(temp.DisposisiStaff)
+
+    for (let keys in temp) {
+      if (!temp[keys]) temp[keys] = '-'
+    }
+
 
     data.push(temp)
    }

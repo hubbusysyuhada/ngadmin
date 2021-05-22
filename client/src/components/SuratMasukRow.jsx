@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { state_user } from '../graphql/ApolloConfig'
-// import { useMutation } from '@apollo/client'
+import { useState, useEffect } from 'react'
+import img64 from '../assets/disposisi.jpg'
+import {jsPDF} from 'jspdf'
 import {
     Typography,
     Table,
@@ -11,226 +11,379 @@ import {
     Box,
     Collapse,
     Button,
-    Snackbar
+    Snackbar,
+    Divider,
+    TextField,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@material-ui/core'
-import Swal from 'sweetalert2'
 import MuiAlert from '@material-ui/lab/Alert';
-import { AiFillPrinter } from "react-icons/ai";
+import { IoDocumentText } from "react-icons/io5";
+import { IconContext } from 'react-icons'
+import { useDispatch } from 'react-redux'
+import { EDIT_SURAT_MASUK } from '../store/actions'
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function Restaurant ({props}) {
-    const [openAddToCart, setOpenAddToCart] = useState(false)
-    // const [addToCart, {data: updateCartData, loading: updateCartLoading}] = useMutation(UPDATE_CART)
-    // const [clearUserCart, {data: clearCartData}] = useMutation(CLEAR_CART)
+    const dispatch = useDispatch()
+    const [openEditDialog, setOpenEditDialog] = useState(false)
+    const [openEditSuccessSnackbar, setOpenEditSuccessSnackbar] = useState(false)
     const [open, setOpen] = useState(false);
-    // let {setOne: set1, setTwo: set2, setThree: set3, setFour: set4, setFive: set5} = props
-    // set1 = set1.split(' - ')
-    // set1[1] = set1[1].replace('MYR', '')
-    // set2 = set2.split(' - ')
-    // set2[1] = set2[1].replace('MYR', '')
-    // set3 = set3.split(' - ')
-    // set3[1] = set3[1].replace('MYR', '')
-    // set4 = set4.split(' - ')
-    // set4[1] = set4[1].replace('MYR', '')
-    // set5 = set5.split(' - ')
-    // set5[1] = set5[1].replace('MYR', '')
-    // const menus = [set1, set2, set3, set4, set5]
+    const [editFormValue, setEditFormValue] = useState({
+        Tanggal: new Date(`${props.Tanggal} 12:00:00`).toISOString().split('T')[0],
+        AsalSurat: props.AsalSurat,
+        Perihal: props.Perihal,
+        NoAgendaDit : props.NoAgendaDit,
+        NomorSurat : props.NomorSurat,
+        TanggalSurat : props.TanggalSurat && props.TanggalSurat !== '-' ? new Date(`${props.TanggalSurat} 12:00:00`).toISOString().split('T')[0] : '',
+        Tujuan: props.Tujuan,
+        DisposisiSeksie: props.DisposisiSeksie.join(', '),
+        IsiDisposisi: props.IsiDisposisi,
+        DisposisiStaff: props.DisposisiStaff.join(', '),
+        Catatan: props.Catatan
+    })
+    const handleEditClickOpen = () => {
+        setOpenEditDialog(true);
+    };
+
+    useEffect(() => {
+        console.log(props, '<<< props buat diisi');
+        console.log(open, '<<< status open collapsible');
+        setEditFormValue({
+            Tanggal: new Date(`${props.Tanggal} 12:00:00`).toISOString().split('T')[0],
+            AsalSurat: props.AsalSurat,
+            Perihal: props.Perihal,
+            NoAgendaDit : props.NoAgendaDit,
+            NomorSurat : props.NomorSurat,
+            TanggalSurat : props.TanggalSurat && props.TanggalSurat !== '-' ? new Date(`${props.TanggalSurat} 12:00:00`).toISOString().split('T')[0] : '',
+            Tujuan: props.Tujuan,
+            DisposisiSeksie: props.DisposisiSeksie.join(', '),
+            IsiDisposisi: props.IsiDisposisi,
+            DisposisiStaff: props.DisposisiStaff.join(', '),
+            Catatan: props.Catatan
+        })
+    }, [])
+    
+    const handleEditClose = () => {
+        setOpenEditDialog(false);
+        setEditFormValue({
+            Tanggal: new Date(`${props.Tanggal} 12:00:00`).toISOString().split('T')[0],
+            AsalSurat: props.AsalSurat,
+            Perihal: props.Perihal,
+            NoAgendaDit : props.NoAgendaDit,
+            NoAgendaSubdit : props.NoAgendaSubdit,
+            NomorSurat : props.NomorSurat,
+            TanggalSurat : new Date(`${props.TanggalSurat} 12:00:00`).toISOString().split('T')[0],
+            Tujuan: props.Tujuan,
+            DisposisiSeksie: props.DisposisiSeksie.join(', '),
+            IsiDisposisi: props.IsiDisposisi,
+            DisposisiStaff: props.DisposisiStaff.join(', '),
+            Catatan: props.Catatan
+        })
+    };
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
           return;
         }
-        setOpenAddToCart(false);
+        setOpenEditSuccessSnackbar(false);
     };
 
-    function updateCart (event, menu) {
+    function printDispo (event) {
         event.preventDefault()
-    //     const restaurantName = props.name
-    //     const foodName = `${menu[0]} - MYR${menu[1]}`
-    //     const restaurantId = props.id
-
-
-    //     if (!state_user().user.cart || state_user().user.cart.restaurant === restaurantName) {
-    //         let flag = true
-    //         let temp = JSON.parse(JSON.stringify(state_user()))
-            
-    //         if (temp.user.cart) {
-    //             let latestCart = temp.user.cart.foods
-    //             latestCart.forEach(food => {
-    //                 if (food.name === foodName) {
-    //                     flag = false
-    //                     food.quantity++
-    //                 }
-    //             })
-    //             if (flag) latestCart.push({
-    //                 name: foodName,
-    //                 quantity: 1
-    //             })
-    //         } else {
-    //             temp.user.cart = {
-    //                 restaurant: restaurantName,
-    //                 restaurantId,
-    //                 foods : [
-    //                     {
-    //                         name: foodName,
-    //                         quantity: 1
-    //                     }
-    //                 ]
-    //             }
-    //         }
-    //         setOpenAddToCart(true)
-
-    //         state_user(temp)
-
-    //         addToCart({
-    //             context: {
-    //                 headers: {
-    //                     access_token: localStorage.getItem('access_token')
-    //                 }
-    //             },
-    //             variables: {
-    //                 restaurantName,
-    //                 foodName,
-    //                 quantity: 1,
-    //                 restaurantId
-    //             },
-    //             refetchQueries: [
-    //                 {
-    //                     query: USER_PROFILE,
-    //                     context: {
-    //                         headers: {
-    //                             access_token: localStorage.getItem('access_token')
-    //                         }
-    //                     }
-    //                 }
-    //             ]
-    //         })
-    //     } else {
-    //         Swal.fire({
-    //             title: 'WOOPSIE...',
-    //             text: `ANOTHER RESTAURANT IS IN YOUR CART, CHOOSE THIS RESTAURANT INSTEAD?`,
-    //             showDenyButton: true,
-    //             confirmButtonText: `Yes`,
-    //             denyButtonText: `No`,
-    //             showClass: {
-    //                 popup: 'animate__animated animate__fadeInDown'
-    //               },
-    //               hideClass: {
-    //                 popup: 'animate__animated animate__fadeOutUp'
-    //               }
-    //         }).then(({isConfirmed}) => {
-
-    //             if (isConfirmed) {
-    //                 setOpenAddToCart(true)
-    //                 clearUserCart(
-    //                     {
-    //                         context: {
-    //                             headers: {
-    //                                 access_token: localStorage.getItem('access_token')
-    //                             }
-    //                         }
-    //                     }
-    //                 )
-    //                 addToCart({
-    //                     context: {
-    //                         headers: {
-    //                             access_token: localStorage.getItem('access_token')
-    //                         }
-    //                     },
-    //                     variables: {
-    //                         restaurantName,
-    //                         foodName,
-    //                         quantity: 1,
-    //                         restaurantId
-    //                     },
-    //                     refetchQueries: [
-    //                         {
-    //                             query: USER_PROFILE,
-    //                             context: {
-    //                                 headers: {
-    //                                     access_token: localStorage.getItem('access_token')
-    //                                 }
-    //                             }
-    //                         }
-    //                     ]
-    //                 })
-                    
-    //                 let temp = JSON.parse(JSON.stringify(state_user()))
-    //                 temp.user.cart.restaurant = restaurantName
-    //                 temp.user.cart.restaurantId = restaurantId
-    //                 temp.user.cart.foods = [
-    //                     {
-    //                         name: foodName,
-    //                         quantity: 1
-    //                     }
-    //                 ]
-    //                 state_user(temp)
-    //             }
-    //         })
-    //     }
+        // alert(`masuk function untuk print dispo nomor surat ${props.NomorSurat}`)
+        var doc = new jsPDF('p', 'mm', [148, 210])
+        // const img64 = require('../assets/disposisi64.txt')
+        doc.addImage(img64, 'JPEG', 0, 0, 148, 210)
+        // doc.save('test.pdf')
+        doc.setFontSize(7)
+        const fontList = doc.getFontList()
+        doc.setFont("Times", 'Italic');
+        // doc.setFontType("Italic");
+        console.log(fontList, '<<< font list');
+        doc.text(105, 24, props.NoAgendaSubdit)
+        doc.text(105, 30, props.Tanggal)
+        doc.text(20, 53, props.NomorSurat)
+        doc.text(80, 53, props.TanggalSurat)
+        doc.output('dataurlnewwindow')
     }
-    // console.log(props, '<<< props dari row');
+
     return (
         <>
-            <TableRow key={props.id} onClick={() => setOpen(!open)} >
-                <TableCell component="th" scope="row" align="center">
-                    {props.id}
+            <TableRow key={props.id} >
+                <TableCell component="th" scope="row" align="center" onClick={() => setOpen(!open)} >
+                    {props.NoAgendaSubdit}
                 </TableCell>
-                <TableCell align="left">
+                <TableCell align="left" onClick={() => setOpen(!open)} >
                     {props.Tanggal}
                 </TableCell>
-                <TableCell align="left">
+                <TableCell align="left" onClick={() => setOpen(!open)}>
                     {props.AsalSurat}
                 </TableCell>
-                <TableCell align="left">
+                <TableCell align="left" onClick={() => setOpen(!open)}>
                     {props.Perihal}
                 </TableCell>
                 <TableCell align="left">
-                    <AiFillPrinter/>
+                    <IconContext.Provider value={{size: '20px'}}>
+                        <a
+                        href="#"
+                        style={{
+                            textDecoration: 'none',
+                            color: 'black',
+                        }}
+                        onClick={printDispo}
+                        ><IoDocumentText/></a>
+                    </IconContext.Provider>
                 </TableCell>
             </TableRow>
 
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                <Collapse in={open} timeout="auto" unmountOnExit>
+                <Collapse in={open} timeout="auto" unmountOnExit style={{backgroundColor: '#efe8e9'}}>
                     <Box margin={1}>
-                    <Typography variant="h6" gutterBottom component="div" style={{textAlign: 'center', marginTop: '20px', marginBottom: '20px'}}>
-                        {props.name}'s Menu
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> No. Agenda Direktur : </b> {props.NoAgendaDit ? props.NoAgendaDit : '-'}
                     </Typography>
-                    <Table size="small" aria-label="purchases">
-                        <TableHead>
-                        <TableRow>
-                            <TableCell align="center" style={{width: '5%'}}>No.</TableCell>
-                            <TableCell align="left" style={{width: '65%'}}>Food/Beverage</TableCell>
-                            <TableCell align="center" style={{width: '15%'}}>Price (MYR)</TableCell>
-                            <TableCell align="left" style={{width: '15%'}}/>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {/* {menus.map((menu, index) => {
-                                return (
-                                    <TableRow>
-                                        <TableCell align="center" style={{width: '5%'}}>{index + 1}</TableCell>
-                                        <TableCell align="left" style={{width: '65%'}}>{menu[0]}</TableCell>
-                                        <TableCell align="center" style={{width: '15%'}}>{menu[1]}</TableCell>
-                                        <TableCell align="center" style={{width: '15%'}}><Button size="small" onClick={(event) => {updateCart(event, menu)}}>add to cart</Button></TableCell>
-                                    </TableRow>
-                                )
-                            })} */}
-                        </TableBody>
-                    </Table>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> No. Surat : </b> {props.NomorSurat ? props.NomorSurat : '-'}
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> Tanggal Surat : </b> {props.TanggalSurat ? props.TanggalSurat : '-'}
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> Tujuan : </b> {props.Tujuan ? props.Tujuan : '-'}
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> Disposisi Seksie : </b> {props.DisposisiSeksie.length === 0 ? '-' : 
+                            <ol>
+                                {props.DisposisiSeksie.map(seksie => (<li>{seksie}</li>))}
+                            </ol>
+                        }
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> Isi Disposisi : </b> {props.IsiDisposisi ? props.IsiDisposisi : '-'}
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> Disposisi Staff : </b> {props.DisposisiStaff.length === 0 ? '-' : 
+                            <ol>
+                                {props.DisposisiStaff.map(staff => (<li>{staff}</li>))}
+                            </ol>
+                        }
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> Catatan : </b> {props.Catatan ? props.Catatan : '-'}
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <div style={{textAlign: 'right', paddingRight: '2%'}}>
+                        <Button variant="contained" color="primary" onClick={handleEditClickOpen}>EDIT</Button>
+                    </div>
                     </Box>
                 </Collapse>
                 </TableCell>
             </TableRow>
-            <Snackbar open={openAddToCart} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+            
+            {/* SNACKBARS */}
+            <Snackbar open={openEditSuccessSnackbar} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
                 <Alert onClose={handleClose} severity="success">
-                Yumm! your food has been added to your cart!
+                    {props.NomorSurat} EDITED
                 </Alert>
             </Snackbar>
+
+            {/* DIALOGS */}
+            <Dialog open={openEditDialog} onClose={handleEditClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Edit No. Agenda Subdit {props.id}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        label="Tanggal"
+                        type="date"
+                        InputLabelProps={{shrink: true}}
+                        value={editFormValue.Tanggal}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, Tanggal: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Nomor Agenda Direktur"
+                        type="text"
+                        value={editFormValue.NoAgendaDit}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, NoAgendaDit: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Asal Surat"
+                        type="text"
+                        value={editFormValue.AsalSurat}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, AsalSurat: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Perihal"
+                        type="text"
+                        value={editFormValue.Perihal}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, Perihal: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Nomor Surat"
+                        type="text"
+                        value={editFormValue.NomorSurat}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, NomorSurat: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Tanggal Surat"
+                        type="date"
+                        InputLabelProps={{shrink: true}}
+                        value={editFormValue.TanggalSurat}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, TanggalSurat: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Tujuan"
+                        type="text"
+                        value={editFormValue.Tujuan}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, Tujuan: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Disposisi Seksie"
+                        type="text"
+                        value={editFormValue.DisposisiSeksie}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, DisposisiSeksie: e.target.value
+                            })
+                        }}
+                        fullWidth
+                        helperText='Pisahkan dengan koma(",")'
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Isi Disposisi"
+                        type="text"
+                        value={editFormValue.IsiDisposisi}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, IsiDisposisi: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Disposisi Staff"
+                        type="text"
+                        value={editFormValue.DisposisiStaff}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, DisposisiStaff: e.target.value
+                            })
+                        }}
+                        fullWidth
+                        helperText='Pisahkan dengan koma(",")'
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Catatan"
+                        type="text"
+                        value={editFormValue.Catatan}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, Catatan: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleEditClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={(event) => {
+                    event.preventDefault()
+                    handleEditClose()
+                    let newDispoSeksie = editFormValue.DisposisiSeksie.split(',')
+                    let newDispoStaff = editFormValue.DisposisiStaff.split(',')
+                    newDispoSeksie = newDispoSeksie.map(seksie => seksie.trim())
+                    newDispoStaff = newDispoStaff.map(staff => staff.trim())
+                    const payload = ({
+                        ...editFormValue,
+                        DisposisiStaff: newDispoStaff,
+                        DisposisiSeksie: newDispoSeksie,
+                        id: props.id
+                    })
+
+                    for (let keys in payload) {
+                        console.log(payload[keys] , '<<< payload[keys]');
+                        if (!payload[keys]) payload[keys] = '-'
+                    }
+
+                    dispatch(EDIT_SURAT_MASUK(payload))
+                    
+                    let tempTanggal = new Date(`${payload.Tanggal} 12:00:00`).toISOString().split('T')[0]
+                    let tempTanggalSurat = new Date(`${payload.TanggalSurat} 12:00:00`).toISOString().split('T')[0]
+                    const temp = ({
+                        ...payload,
+                        Tanggal: tempTanggal,
+                        TanggalSurat: tempTanggalSurat,
+                        DisposisiSeksie: newDispoSeksie.join(', '),
+                        DisposisiStaff: newDispoStaff.join(', ')
+                    })
+                    setEditFormValue(temp)
+                    
+                }} color="primary">
+                    Edit
+                </Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }

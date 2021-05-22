@@ -5,7 +5,7 @@ class SuratMasukController {
     static fetchAll (req, res, next) {
         console.log('masuk fetch all');
         const {year} = req.headers
-        SuratMasuk.findAll()
+        SuratMasuk.findAll({order: [['id', 'ASC']]})
             .then (data => {
                 data.forEach(surat => {
                     surat.DisposisiSeksie = JSON.parse(surat.DisposisiSeksie)
@@ -50,12 +50,12 @@ class SuratMasukController {
             const answer = {
                 Tanggal: changeDateFormat(req.body.Tanggal).serverDate,
                 NoAgendaSubdit: last ? +last.NoAgendaSubdit + 1 : 1,
-                NoAgendaDit: req.body.NoAgendaDit,
-                AsalSurat: req.body.AsalSurat,
-                NomorSurat: req.body.NomorSurat,
-                Tujuan: req.body.Tujuan,
-                TanggalSurat: changeDateFormat(req.body.TanggalSurat).serverDate,
-                Perihal: req.body.Perihal,
+                NoAgendaDit: req.body.NoAgendaDit ? req.body.NoAgendaDit : '-',
+                AsalSurat: req.body.AsalSurat ? req.body.AsalSurat : '_',
+                NomorSurat: req.body.NomorSurat ? req.body.NomorSurat : '-',
+                Tujuan: req.body.Tujuan ? req.body.Tujuan : '-',
+                TanggalSurat: (req.body.TanggalSurat ? changeDateFormat(req.body.TanggalSurat).serverDate : '-'),
+                Perihal: req.body.Perihal ? req.body.Perihal : '-',
                 DisposisiSeksie: "[]",
                 DisposisiStaff: "[]"
             }
@@ -90,6 +90,8 @@ class SuratMasukController {
                 DisposisiSeksie: req.body.DisposisiSeksie,
                 DisposisiStaff: req.body.DisposisiStaff
             }
+            answer.DisposisiSeksie = JSON.stringify(answer.DisposisiSeksie)
+            answer.DisposisiStaff = JSON.stringify(answer.DisposisiStaff)
             const data = await SuratMasuk.update(answer, {where: {id}, returning:true})
             res.status(200).json(data)
             

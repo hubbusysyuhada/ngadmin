@@ -1,5 +1,4 @@
 import { axios } from '../helpers/axios'
-const baseUrl = 'http://localhost:3000/'
 
 export function USER_LOGIN (param) {
     return async (dispatch) => {
@@ -53,7 +52,38 @@ export function FETCH_SURAT_MASUK () {
                 access_token: localStorage.getItem('access_token')
             }
         })
-        console.log(data, '<<<< data surat masuk');
         dispatch({type: 'suratmasuk/fetch', payload: data})
+    }
+}
+
+export function EDIT_SURAT_MASUK (payload) {
+    return (dispatch) => {
+
+        // axios di sini sebelum reassign bentuk tanggal baru
+        axios.put(`/suratmasuk/${payload.id}`, {
+            Tanggal: payload.Tanggal,
+            NoAgendaSubdit: payload.NoAgendaSubdit,
+            NoAgendaDit: payload.NoAgendaDit,
+            AsalSurat: payload.AsalSurat,
+            NomorSurat: payload.NomorSurat,
+            Tujuan: payload.Tujuan,
+            TanggalSurat: payload.TanggalSurat,
+            Perihal: payload.Perihal,
+            DisposisiSeksie: payload.DisposisiSeksie,
+            DisposisiStaff: payload.DisposisiStaff,
+            Catatan: payload.Catatan,
+            IsiDisposisi: payload.IsiDisposisi
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
+        let newTanggal = payload.Tanggal.split('-')
+        payload.Tanggal = `${newTanggal[2] < 10 ? newTanggal[2][1] : newTanggal[2]} ${months[newTanggal[1] - 1]} ${newTanggal[0]}`
+        let newTanggalSurat = payload.TanggalSurat.split('-')
+        payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
+        dispatch({type: 'suratmasuk/edit', payload})
     }
 }

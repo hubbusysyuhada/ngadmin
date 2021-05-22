@@ -125,7 +125,7 @@ export default function VerticalTabs() {
 
     return (
     <div className={classes.root}>
-            <img src={textLogo} alt="image cannot be shown" style={{width: '180px', textAlign: 'center', margin: 'auto'}}/>
+            <img src={textLogo} alt="image cannot be shown" style={{width: '180px', textAlign: 'center', margin: 'auto', marginTop: '15px'}}/>
         <div>
           <IconContext.Provider value={{ size: '23px' }}>
             <Tabs
