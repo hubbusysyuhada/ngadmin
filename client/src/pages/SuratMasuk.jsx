@@ -16,13 +16,15 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions
+    DialogActions,
+    Snackbar
 } from '@material-ui/core'
+import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux'
 import Navbar from '../components/Navbar'
 import loading_gif from '../assets/loading.gif'
-import { FETCH_SURAT_MASUK } from '../store/actions';
+import { FETCH_SURAT_MASUK, ADD_SURAT_MASUK } from '../store/actions';
 import SuratMasukRow from '../components/SuratMasukRow'
 
 const useStyle = makeStyles({
@@ -41,10 +43,13 @@ const useStyle = makeStyles({
         margin: 'auto'
     },
         tableContainer: {
-        maxHeight: 550,
+        maxHeight: 500,
         }
 })
 
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function SuratMasuk () {
     const dispatch = useDispatch()
@@ -56,13 +61,21 @@ export default function SuratMasuk () {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [filter, setFilter] = useState('')
-    const [newForm, setNewForm] = useState({
-
-    })
+    const [openAddSuccessSnackbar, setOpenAddSuccessSnackbar] = useState(false)
+    const [openAddErrorSnackbar, setopenAddErrorSnackbar] = useState(false)
     let today = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }).split(',')[0].split('/')
     if (today[0] < 10) today[0] = `0${today[0]}`
     if (today[1] < 10) today[1] = `0${today[1]}`
     today = `${today[2]}-${today[0]}-${today[1]}`
+    const [newForm, setNewForm] = useState({
+        Tanggal: today,
+        NoAgendaDit: null,
+        AsalSurat: null,
+        Perihal: null,
+        NomorSurat: null,
+        TanggalSurat: null,
+        Tujuan: null
+    })
     
     useEffect(() => {
         if (!localStorage.getItem('access_token')) {
@@ -89,31 +102,23 @@ export default function SuratMasuk () {
                 ||
                 surat.DisposisiStaff.join('').toLowerCase().includes(filter)
             ))
-            console.log(filter, '<<< filter');
-            console.log(filtered, '<<< filtered');
-
+            setPage(0)
             setFilteredArray(filtered)
         } else {
             setFilteredArray(null)
         }
     }, [filter])
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setOpenAddSuccessSnackbar(false);
+        setopenAddErrorSnackbar(false)
+    };
+
     const handleAddClose = () => {
         setOpenAddDialog(false);
-        // setEditFormValue({
-        //     Tanggal: new Date(`${props.Tanggal} 12:00:00`).toISOString().split('T')[0],
-        //     AsalSurat: props.AsalSurat,
-        //     Perihal: props.Perihal,
-        //     NoAgendaDit : props.NoAgendaDit,
-        //     NoAgendaSubdit : props.NoAgendaSubdit,
-        //     NomorSurat : props.NomorSurat,
-        //     TanggalSurat : new Date(`${props.TanggalSurat} 12:00:00`).toISOString().split('T')[0],
-        //     Tujuan: props.Tujuan,
-        //     DisposisiSeksie: props.DisposisiSeksie.join(', '),
-        //     IsiDisposisi: props.IsiDisposisi,
-        //     DisposisiStaff: props.DisposisiStaff.join(', '),
-        //     Catatan: props.Catatan
-        // })
     };
 
     const handleChangePage = (event, newPage) => {
@@ -125,8 +130,6 @@ export default function SuratMasuk () {
         setPage(0);
     };
 
-    console.log(today, '<<< hari ini');
-
     return (
         <div>
             <Grid container spacing={3} className={style.container}>
@@ -137,15 +140,18 @@ export default function SuratMasuk () {
                 </Grid>
                 <Grid item xs={10} className={style.item}>
                     <div style={{marginTop: '10px'}}>
-                        <Typography variant="h2" className={style.text}>
+                        <Typography variant="h3" className={style.text}>
                             SURAT MASUK
+                        </Typography>
+                        <Typography variant="h5" className={style.text}>
+                            {localStorage.getItem('year')}
                         </Typography>
                         <br/>
                             {suratMasukData ?
                                 <>
-                                    <div style={{textAlign: 'left', width: '100%', marginLeft: '4%', marginBottom: '10px', marginTop: '0', display: 'flex', justifyContent: 'space-between'}}>
-                                        <TextField label="Cari di sini" size="small" style={{width: '400px', margin: '20px', textAlign: 'left'}} onChange={(e) => setFilter(e.target.value)} helperText="Asal Surat, Nomor Surat, Tanggal, Tujuan, Nama Staff/Seksie"/>
-                                        <Button size='small' variant='contained' color='primary' style={{width: '100px', margin: '20px', marginRight: '9%', height: '30px', marginTop: '60px'}} onClick={() => setOpenAddDialog(true)}>NEW</Button>
+                                    <div style={{textAlign: 'left', width: '95%', marginLeft: '4%', marginBottom: '10px', marginTop: '0', display: 'flex', justifyContent: 'space-between'}}>
+                                        <TextField label="Cari Surat Masuk" size="small" style={{width: '400px', margin: '20px', textAlign: 'left'}} onChange={(e) => setFilter(e.target.value)} helperText="Asal Surat, Nomor Surat, Perihal, Tanggal, Tujuan, Nama Staff/Seksie"/>
+                                        <Button size='small' variant='contained' color='primary' style={{width: '100px', margin: '20px', marginRight: '4%', height: '30px', marginTop: '60px'}} onClick={() => setOpenAddDialog(true)}>NEW</Button>
                                     </div>
                                     <Paper className={style.tableRoot}>
                                         <TableContainer className={style.tableContainer}>
@@ -227,6 +233,18 @@ export default function SuratMasuk () {
                 </Grid>
             </Grid>
 
+            {/* SNACKBARS */}
+            <Snackbar open={openAddSuccessSnackbar} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+                <Alert onClose={handleClose} severity="success">
+                    Disposisi Berhasil Ditambahkan
+                </Alert>
+            </Snackbar>
+            <Snackbar open={openAddErrorSnackbar} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
+                <Alert onClose={handleClose} severity="error">
+                    Tanggal dan Tanggal Surat Tidak Boleh Kosong
+                </Alert>
+            </Snackbar>
+
             {/* DIALOGS */}
             <Dialog open={openAddDialog} onClose={handleAddClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Buat Disposisi Baru</DialogTitle>
@@ -236,10 +254,11 @@ export default function SuratMasuk () {
                         label="Tanggal"
                         type="date"
                         defaultValue={today}
-                        // defaultValue='2021-5-22'
                         InputLabelProps={{shrink: true}}
                         onChange={(e) => {
-                            console.log(e.target.value, '<<<<');
+                            setNewForm({
+                                ...newForm, Tanggal: e.target.value
+                            })
                         }}
                         fullWidth
                     />
@@ -247,48 +266,48 @@ export default function SuratMasuk () {
                         margin="dense"
                         label="Nomor Agenda Direktur"
                         type="text"
-                        // value={editFormValue.NoAgendaDit}
-                        // onChange={(e) => {
-                        //     setEditFormValue({
-                        //         ...editFormValue, NoAgendaDit: e.target.value
-                        //     })
-                        // }}
+                        value={newForm.NoAgendaDit}
+                        onChange={(e) => {
+                            setNewForm({
+                                ...newForm, Tanggal: e.target.value
+                            })
+                        }}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
                         label="Asal Surat"
                         type="text"
-                        // value={editFormValue.AsalSurat}
-                        // onChange={(e) => {
-                        //     setEditFormValue({
-                        //         ...editFormValue, AsalSurat: e.target.value
-                        //     })
-                        // }}
+                        value={newForm.AsalSurat}
+                        onChange={(e) => {
+                            setNewForm({
+                                ...newForm, AsalSurat: e.target.value
+                            })
+                        }}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
                         label="Perihal"
                         type="text"
-                        // value={editFormValue.Perihal}
-                        // onChange={(e) => {
-                        //     setEditFormValue({
-                        //         ...editFormValue, Perihal: e.target.value
-                        //     })
-                        // }}
+                        value={newForm.Perihal}
+                        onChange={(e) => {
+                            setNewForm({
+                                ...newForm, Perihal: e.target.value
+                            })
+                        }}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
                         label="Nomor Surat"
                         type="text"
-                        // value={editFormValue.NomorSurat}
-                        // onChange={(e) => {
-                        //     setEditFormValue({
-                        //         ...editFormValue, NomorSurat: e.target.value
-                        //     })
-                        // }}
+                        value={newForm.NomorSurat}
+                        onChange={(e) => {
+                            setNewForm({
+                                ...newForm, NomorSurat: e.target.value
+                            })
+                        }}
                         fullWidth
                     />
                     <TextField
@@ -296,24 +315,24 @@ export default function SuratMasuk () {
                         label="Tanggal Surat"
                         type="date"
                         InputLabelProps={{shrink: true}}
-                        // value={editFormValue.TanggalSurat}
-                        // onChange={(e) => {
-                        //     setEditFormValue({
-                        //         ...editFormValue, TanggalSurat: e.target.value
-                        //     })
-                        // }}
+                        value={newForm.TanggalSurat}
+                        onChange={(e) => {
+                            setNewForm({
+                                ...newForm, TanggalSurat: e.target.value
+                            })
+                        }}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
                         label="Tujuan"
                         type="text"
-                        // value={editFormValue.Tujuan}
-                        // onChange={(e) => {
-                        //     setEditFormValue({
-                        //         ...editFormValue, Tujuan: e.target.value
-                        //     })
-                        // }}
+                        value={newForm.Tujuan}
+                        onChange={(e) => {
+                            setNewForm({
+                                ...newForm, Tujuan: e.target.value
+                            })
+                        }}
                         fullWidth
                     />
                 </DialogContent>
@@ -324,36 +343,32 @@ export default function SuratMasuk () {
                 <Button
                 onClick={(event) => {
                     event.preventDefault()
-                    handleAddClose()
-                //     let newDispoSeksie = editFormValue.DisposisiSeksie.split(',')
-                //     let newDispoStaff = editFormValue.DisposisiStaff.split(',')
-                //     newDispoSeksie = newDispoSeksie.map(seksie => seksie.trim())
-                //     newDispoStaff = newDispoStaff.map(staff => staff.trim())
-                //     const payload = ({
-                //         ...editFormValue,
-                //         DisposisiStaff: newDispoStaff,
-                //         DisposisiSeksie: newDispoSeksie,
-                //         id: props.id
-                //     })
+                    const payload = JSON.parse(JSON.stringify(newForm))
+                    for (let keys in payload) {
+                        if (!payload[keys]) payload[keys] = '-'
+                    }
+                    let flag = true
+                    if (payload.Tanggal === '-' || payload.TanggalSurat === '-') flag = false
+                    if (!flag) setopenAddErrorSnackbar(true)
+                    else {
+                        setopenAddErrorSnackbar(false)
+                        handleAddClose()
 
-                //     for (let keys in payload) {
-                //         console.log(payload[keys] , '<<< payload[keys]');
-                //         if (!payload[keys]) payload[keys] = '-'
-                //     }
+                        // dispatch
+                        dispatch(ADD_SURAT_MASUK(payload))
 
-                //     dispatch(EDIT_SURAT_MASUK(payload))
-                    
-                //     let tempTanggal = new Date(`${payload.Tanggal} 12:00:00`).toISOString().split('T')[0]
-                //     let tempTanggalSurat = new Date(`${payload.TanggalSurat} 12:00:00`).toISOString().split('T')[0]
-                //     const temp = ({
-                //         ...payload,
-                //         Tanggal: tempTanggal,
-                //         TanggalSurat: tempTanggalSurat,
-                //         DisposisiSeksie: newDispoSeksie.join(', '),
-                //         DisposisiStaff: newDispoStaff.join(', ')
-                //     })
-                //     setEditFormValue(temp)
-                    
+                        setNewForm({
+                            Tanggal: today,
+                            NoAgendaDit: null,
+                            AsalSurat: null,
+                            Perihal: null,
+                            NomorSurat: null,
+                            TanggalSurat: null,
+                            Tujuan: null
+                        })
+                        setOpenAddSuccessSnackbar(true)
+                    }
+
                 }}
                 color="primary">
                     Add

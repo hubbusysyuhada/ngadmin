@@ -78,12 +78,41 @@ export function EDIT_SURAT_MASUK (payload) {
                 access_token: localStorage.getItem('access_token')
             }
         })
-
         const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
-        let newTanggal = payload.Tanggal.split('-')
-        payload.Tanggal = `${newTanggal[2] < 10 ? newTanggal[2][1] : newTanggal[2]} ${months[newTanggal[1] - 1]} ${newTanggal[0]}`
-        let newTanggalSurat = payload.TanggalSurat.split('-')
-        payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
+        if (payload.TanggalSurat !== '-') {
+            let newTanggalSurat = payload.TanggalSurat.split('-')
+            payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
+        }
+        if (payload.Tanggal !== '-') {
+            let newTanggal = payload.Tanggal.split('-')
+            payload.Tanggal = `${newTanggal[2] < 10 ? newTanggal[2][1] : newTanggal[2]} ${months[newTanggal[1] - 1]} ${newTanggal[0]}`
+        }
         dispatch({type: 'suratmasuk/edit', payload})
+    }
+}
+
+export function ADD_SURAT_MASUK (payload) {
+    return async (dispatch) => {
+        await axios.post('/suratmasuk/new', {
+            Tanggal: payload.Tanggal,
+            NoAgendaDit: payload.NoAgendaDit,
+            AsalSurat: payload.AsalSurat,
+            Perihal: payload.Perihal,
+            NomorSurat: payload.NomorSurat,
+            TanggalSurat: payload.Tanggal,
+            Tujuan: payload.Tujuan
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                year: localStorage.getItem('year')
+            }
+        })
+        const { data } = await axios.get('/suratmasuk', {
+            headers: {
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        dispatch({type: 'suratmasuk/fetch', payload: data})
     }
 }

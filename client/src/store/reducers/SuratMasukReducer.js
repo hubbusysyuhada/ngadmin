@@ -13,7 +13,6 @@ function SuratMasukReducer (state = initialState, action) {
                 temp[i] = payload
             }
         }
-        console.log(temp, '<<<< temp dari reducer setelah reassign');
         return {...state, datas: temp}
     }
     return {...state}

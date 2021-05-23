@@ -3,7 +3,6 @@ const {SuratMasuk} = require('../models')
 
 class SuratMasukController {
     static fetchAll (req, res, next) {
-        console.log('masuk fetch all');
         const {year} = req.headers
         SuratMasuk.findAll({order: [['id', 'ASC']]})
             .then (data => {
@@ -51,7 +50,7 @@ class SuratMasukController {
                 Tanggal: changeDateFormat(req.body.Tanggal).serverDate,
                 NoAgendaSubdit: last ? +last.NoAgendaSubdit + 1 : 1,
                 NoAgendaDit: req.body.NoAgendaDit ? req.body.NoAgendaDit : '-',
-                AsalSurat: req.body.AsalSurat ? req.body.AsalSurat : '_',
+                AsalSurat: req.body.AsalSurat ? req.body.AsalSurat : '-',
                 NomorSurat: req.body.NomorSurat ? req.body.NomorSurat : '-',
                 Tujuan: req.body.Tujuan ? req.body.Tujuan : '-',
                 TanggalSurat: (req.body.TanggalSurat ? changeDateFormat(req.body.TanggalSurat).serverDate : '-'),
@@ -90,6 +89,7 @@ class SuratMasukController {
                 DisposisiSeksie: req.body.DisposisiSeksie,
                 DisposisiStaff: req.body.DisposisiStaff
             }
+            // console.log(answer, '<<< answer');
             answer.DisposisiSeksie = JSON.stringify(answer.DisposisiSeksie)
             answer.DisposisiStaff = JSON.stringify(answer.DisposisiStaff)
             const data = await SuratMasuk.update(answer, {where: {id}, returning:true})
