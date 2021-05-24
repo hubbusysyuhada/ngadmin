@@ -235,12 +235,13 @@ export default function VerticalTabs() {
                   justifyContent: 'flex-start',
                   fontFamily: 'monospace',
                   paddingLeft: '15%',
-                  marginTop: '170%'
+                  marginTop: '150%'
                 }}
                 onClick={logout}
                 >
-                    {<ExitToAppTwoToneIcon/>} LOGOUT
+                    {<ExitToAppTwoToneIcon/>} <span style={{marginLeft: '15px'}}>LOGOUT</span>
                 </Button>
+                <h5 style={{textAlign: 'center', fontFamily: 'monospace'}}><a href="https://github.com/hubbusysyuhada" style={{textDecoration: 'none', color: 'black'}}>Hubbusysyuhada®</a><br/> 2021</h5>
             </Tabs>
           </IconContext.Provider>
         </div>

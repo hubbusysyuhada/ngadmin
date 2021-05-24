@@ -6,6 +6,6 @@ router.get('/', UndanganMasukController.fetchAll)
 router.get('/:id', UndanganMasukController.fetchOne)
 router.put('/:id', UndanganMasukController.editOne)
 router.post('/new', UndanganMasukController.newUndanganMasuk)
-// router.delete('/:id', UndanganMasukController.deleteOne)
+router.delete('/:id', UndanganMasukController.deleteOne)
 
 module.exports = router

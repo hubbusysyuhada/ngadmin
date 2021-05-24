@@ -118,6 +118,15 @@ export default function SuratMasuk () {
     };
 
     const handleAddClose = () => {
+        setNewForm({
+            Tanggal: today,
+            NoAgendaDit: null,
+            AsalSurat: null,
+            Perihal: null,
+            NomorSurat: null,
+            TanggalSurat: null,
+            Tujuan: null
+        })
         setOpenAddDialog(false);
     };
 
@@ -150,7 +159,7 @@ export default function SuratMasuk () {
                             {suratMasukData ?
                                 <>
                                     <div style={{textAlign: 'left', width: '95%', marginLeft: '4%', marginBottom: '10px', marginTop: '0', display: 'flex', justifyContent: 'space-between'}}>
-                                        <TextField label="Cari Surat Masuk" size="small" style={{width: '400px', margin: '20px', textAlign: 'left'}} onChange={(e) => setFilter(e.target.value)} helperText="Asal Surat, Nomor Surat, Perihal, Tanggal, Tujuan, Nama Staff/Seksie"/>
+                                        <TextField label="Cari Surat Masuk" size="small" style={{width: '400px', margin: '20px', textAlign: 'left'}} onChange={(e) => setFilter(e.target.value)} helperText="Asal Surat, Nama Staff/Seksie, Nomor Surat, Perihal, Tanggal, Tujuan"/>
                                         <Button size='small' variant='contained' color='primary' style={{width: '100px', margin: '20px', marginRight: '4%', height: '30px', marginTop: '60px'}} onClick={() => setOpenAddDialog(true)}>NEW</Button>
                                     </div>
                                     <Paper className={style.tableRoot}>
@@ -269,7 +278,7 @@ export default function SuratMasuk () {
                         value={newForm.NoAgendaDit}
                         onChange={(e) => {
                             setNewForm({
-                                ...newForm, Tanggal: e.target.value
+                                ...newForm, NoAgendaDit: e.target.value
                             })
                         }}
                         fullWidth
@@ -354,18 +363,8 @@ export default function SuratMasuk () {
                         setopenAddErrorSnackbar(false)
                         handleAddClose()
 
-                        // dispatch
                         dispatch(ADD_SURAT_MASUK(payload))
 
-                        setNewForm({
-                            Tanggal: today,
-                            NoAgendaDit: null,
-                            AsalSurat: null,
-                            Perihal: null,
-                            NomorSurat: null,
-                            TanggalSurat: null,
-                            Tujuan: null
-                        })
                         setOpenAddSuccessSnackbar(true)
                     }
 

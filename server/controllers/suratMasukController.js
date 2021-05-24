@@ -105,6 +105,7 @@ class SuratMasukController {
     }
 
     static async deleteOne (req, res, next) {
+        console.log('masuk delete');
         try {
             const {id} = req.params
             await SuratMasuk.destroy({where: {id}})

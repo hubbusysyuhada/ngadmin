@@ -3,7 +3,6 @@ const {UndanganMasuk} = require('../models')
 
 class UndanganMasukController {
     static fetchAll (req, res, next) {
-        console.log('masuk fetch all');
         const {year} = req.headers
         UndanganMasuk.findAll()
             .then (data => {
@@ -11,7 +10,6 @@ class UndanganMasukController {
                     surat.DisposisiSeksie = JSON.parse(surat.DisposisiSeksie)
                     surat.DisposisiStaff = JSON.parse(surat.DisposisiStaff)
                 });
-                console.log(data, '<<< data');
 
                 data = data.filter(surat => surat.Tanggal.includes(String(year)))
                 res.status(200).json(data)
@@ -95,10 +93,12 @@ class UndanganMasukController {
                 DisposisiSeksie: req.body.DisposisiSeksie,
                 DisposisiStaff: req.body.DisposisiStaff
             }
+            
             const data = await UndanganMasuk.update(answer, {where: {id}, returning:true})
             res.status(200).json(data)
             
         } catch (error) {
+            console.log(error, '<<<< error');
             next({
                 name: 'custom error',
                 code: 500,

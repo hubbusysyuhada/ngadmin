@@ -20,7 +20,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { IoDocumentText } from "react-icons/io5";
 import { IconContext } from 'react-icons'
 import { useDispatch } from 'react-redux'
-import { EDIT_SURAT_MASUK, DELETE_SURAT_MASUK } from '../store/actions'
+import { EDIT_SURAT_MASUK, DELETE_SURAT_MASUK, DELETE_UNDANGAN_MASUK, EDIT_UNDANGAN_MASUK } from '../store/actions'
 import Swal from 'sweetalert2'
 
 function Alert(props) {
@@ -60,7 +60,8 @@ export default function Restaurant ({props}) {
         doc.addImage(img64, 'JPEG', 0, 0, 148, 210)
         doc.setFontSize(8)
         doc.setFont("Times", 'Italic');
-        const splittedTextPerihal = doc.splitTextToSize(props.Perihal, 109)
+        const tempStr = `${props.Perihal} || Waktu : ${props.Waktu} || Tempat : ${props.Tempat} `
+        const splittedTextPerihal = doc.splitTextToSize(tempStr, 109)
         doc.text(105, 24, props.NoAgendaSubdit)
         doc.text(105, 30, props.Tanggal)
         doc.text(20, 53, props.NomorSurat)
@@ -81,7 +82,7 @@ export default function Restaurant ({props}) {
               }
         }).then(({isConfirmed, isDenied}) => {
             if (isConfirmed) doc.save(`Disposisi Surat Masuk Agenda Subdit ${props.NoAgendaSubdit}.pdf`)
-            else if (isDenied) doc.output('dataurlnewwindow',{filename: `Disposisi Surat Masuk Agenda Subdit ${props.NoAgendaSubdit}.pdf`})        // doc.save('test.pdf')
+            else if (isDenied) doc.output('dataurlnewwindow',{filename: `Disposisi Undangan Agenda Subdit ${props.NoAgendaSubdit}.pdf`})        // doc.save('test.pdf')
         })
     }
 
@@ -108,11 +109,13 @@ export default function Restaurant ({props}) {
             DisposisiSeksie: props.DisposisiSeksie.join(', '),
             IsiDisposisi: props.IsiDisposisi,
             DisposisiStaff: props.DisposisiStaff.join(', '),
-            Catatan: props.Catatan
+            Catatan: props.Catatan,
+            Waktu: props.Waktu,
+            Tempat: props.Tempat
         })
     }
 
-    function deleteSurat () {
+    function deleteUndangan () {
         Swal.fire({
             icon: 'question',
             title: `Delete Disposisi No. ${props.NoAgendaSubdit}?`,
@@ -128,7 +131,7 @@ export default function Restaurant ({props}) {
               }
         }).then(({isConfirmed}) => {
             if (isConfirmed) {
-                dispatch(DELETE_SURAT_MASUK(props))
+                dispatch(DELETE_UNDANGAN_MASUK(props))
             }
         })
     }
@@ -144,6 +147,9 @@ export default function Restaurant ({props}) {
                 </TableCell>
                 <TableCell align="left" onClick={openCollapsible}>
                     {props.AsalSurat}
+                </TableCell>
+                <TableCell align="left" onClick={openCollapsible}>
+                    {props.Tujuan}
                 </TableCell>
                 <TableCell align="left" onClick={openCollapsible}>
                     {props.Perihal}
@@ -179,7 +185,11 @@ export default function Restaurant ({props}) {
                     </Typography>
                     <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
                     <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
-                        <b> Tujuan : </b> {props.Tujuan ? props.Tujuan : '-'}
+                        <b> Tempat : </b> {props.Tempat ? props.Tempat : '-'}
+                    </Typography>
+                    <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
+                    <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
+                        <b> Waktu : </b> {props.Waktu ? props.Waktu : '-'}
                     </Typography>
                     <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
                     <Typography variant="h7" gutterBottom component="div" style={{textAlign: 'left', paddingLeft: '3%'}}>
@@ -207,7 +217,7 @@ export default function Restaurant ({props}) {
                     </Typography>
                     <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
                     <div style={{textAlign: 'right', paddingRight: '2%'}}>
-                        <Button variant="contained" color="secondary" onClick={deleteSurat} style={{height: '30px', marginRight: '10px'}}>DELETE</Button>
+                        <Button variant="contained" color="secondary" onClick={deleteUndangan} style={{height: '30px', marginRight: '10px'}}>DELETE</Button>
                         <Button variant="contained" color="primary" onClick={handleEditClickOpen} style={{height: '30px'}}>EDIT</Button>
                     </div>
                     </Box>
@@ -319,6 +329,30 @@ export default function Restaurant ({props}) {
                     />
                     <TextField
                         margin="dense"
+                        label="Waktu"
+                        type="text"
+                        value={editFormValue ? editFormValue.Waktu : ''}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, Waktu: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Tempat"
+                        type="text"
+                        value={editFormValue ? editFormValue.Tempat : ''}
+                        onChange={(e) => {
+                            setEditFormValue({
+                                ...editFormValue, Tempat: e.target.value
+                            })
+                        }}
+                        fullWidth
+                    />
+                    <TextField
+                        margin="dense"
                         label="Disposisi Seksie"
                         type="text"
                         value={editFormValue ? editFormValue.DisposisiSeksie : ''}
@@ -398,7 +432,7 @@ export default function Restaurant ({props}) {
                     else {
                         handleEditClose()
                         setOpenEditSuccessSnackbar(true)
-                        dispatch(EDIT_SURAT_MASUK(payload))
+                        dispatch(EDIT_UNDANGAN_MASUK(payload))
                         let tempTanggal = payload.Tanggal ? new Date(`${payload.Tanggal} 12:00:00`).toISOString().split('T')[0] : '-'
                         let tempTanggalSurat = payload.TanggalSurat ? new Date(`${payload.TanggalSurat} 12:00:00`).toISOString().split('T')[0] : '-'
                         const temp = ({

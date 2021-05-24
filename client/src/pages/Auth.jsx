@@ -123,6 +123,7 @@ export default function Auth () {
                         size="small"
                         type="text"
                         label="Username"
+                        name="Username"
                         variant="outlined"
                         className={style.input}
                         onChange={(e) => setUserInput({
@@ -132,6 +133,7 @@ export default function Auth () {
                         <TextField
                         size="small"
                         type="password"
+                        name="Password"
                         label="Password"
                         variant="outlined"
                         className={style.input}
@@ -145,6 +147,7 @@ export default function Auth () {
                             <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
+                            name="Year"
                             value={userInput.year}
                             onChange={(e) => setUserInput({
                                 ...userInput, year: e.target.value
@@ -152,11 +155,11 @@ export default function Auth () {
                             label="Year"
                             style={{textAlign: 'left'}}
                             >
-                                <MenuItem value={2020}>2020</MenuItem>
                                 <MenuItem value={2021}>2021</MenuItem>
                                 <MenuItem value={2022}>2022</MenuItem>
                                 <MenuItem value={2023}>2023</MenuItem>
                                 <MenuItem value={2024}>2024</MenuItem>
+                                <MenuItem value={2025}>2025</MenuItem>
                             </Select>
                             <FormHelperText> {yearIsFilled ? '' : 'Please select year'} </FormHelperText>
                         </FormControl>
