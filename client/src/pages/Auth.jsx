@@ -146,7 +146,7 @@ export default function Auth () {
                             <InputLabel>Year</InputLabel>
                             <Select
                             labelId="demo-simple-select-label"
-                            id="demo-simple-select"
+                            id="year-selection"
                             name="Year"
                             value={userInput.year}
                             onChange={(e) => setUserInput({
@@ -155,11 +155,11 @@ export default function Auth () {
                             label="Year"
                             style={{textAlign: 'left'}}
                             >
-                                <MenuItem value={2021}>2021</MenuItem>
-                                <MenuItem value={2022}>2022</MenuItem>
-                                <MenuItem value={2023}>2023</MenuItem>
-                                <MenuItem value={2024}>2024</MenuItem>
-                                <MenuItem value={2025}>2025</MenuItem>
+                                <MenuItem value={2021} id="year-2021">2021</MenuItem>
+                                <MenuItem value={2022} id="year-2022">2022</MenuItem>
+                                <MenuItem value={2023} id="year-2023">2023</MenuItem>
+                                <MenuItem value={2024} id="year-2024">2024</MenuItem>
+                                <MenuItem value={2025} id="year-2025">2025</MenuItem>
                             </Select>
                             <FormHelperText> {yearIsFilled ? '' : 'Please select year'} </FormHelperText>
                         </FormControl>

@@ -54,7 +54,6 @@ export function FETCH_USERS () {
                 access_token: localStorage.getItem('access_token')
             }
         })
-        console.log(data, '<<< user list dari actions');
         dispatch({type: 'user/fetch', payload: data.data})
     }
 }
