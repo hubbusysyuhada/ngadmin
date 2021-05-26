@@ -72,8 +72,10 @@ class SuratKeluarController {
 
     static async createNew (req, res, next) {
         try {
-            const last = await SuratKeluar.findAll({order: [['id', 'DESC']], limit: 1})
-            let lastNumber = last[0].NomorSurat
+            let last = await SuratKeluar.findAll({order: [['id', 'DESC']]})
+            last = last.filter(surat => surat.TanggalSurat.includes(req.headers.year))
+            let lastNumber;
+            last.length == 0 ? lastNumber = 0 : lastNumber = last[0].NomorSurat
             let newNumber;
             if (isNaN(+lastNumber)) {
                 let temp = lastNumber.split('/')
@@ -119,9 +121,12 @@ class SuratKeluarController {
     static async bookMany (req, res, next) {
         try {
             let {ammount, TanggalSurat, type} = req.body
+            let tahun = req.headers.year
             const formattedDate = changeDateFormat(TanggalSurat)
-            const last = await SuratKeluar.findAll({order: [['id', 'DESC']], limit: 1})
-            let lastNumber = last[0].NomorSurat
+            let last = await SuratKeluar.findAll({order: [['id', 'DESC']]})
+            last = last.filter(surat => surat.TanggalSurat.includes(req.headers.year))
+            let lastNumber;
+            last.length == 0 ? lastNumber = 0 : lastNumber = last[0].NomorSurat
             if (isNaN(+lastNumber)) {
                 let temp = lastNumber.split('/')
                 temp[0] = temp[0].split('.')
@@ -134,8 +139,8 @@ class SuratKeluarController {
                 let temp = {
                     TanggalSurat: formattedDate.serverDate,
                     NomorSurat: `${type}.${newNumber}/REN/SUBDIT-PWAP/${formattedDate.month}/${formattedDate.year}`,
-                    Tujuan: '',
-                    Perihal: '',
+                    Tujuan: 'booked',
+                    Perihal: 'booked',
                     Waktu: '',
                     Tempat: '',
                     File: '',
@@ -151,6 +156,21 @@ class SuratKeluarController {
                 name: 'custom error',
                 code: 404,
                 message: 'not found'
+            })
+        }
+    }
+
+    static async deleteOne (req, res, next) {
+        try {
+            const {id} = req.params
+            await SuratKeluar.destroy({where: {id}})
+            res.status(200).json({message: 'delete success'})
+        } catch (error) {
+            console.log(error);
+            next({
+                name: 'custom error',
+                code: 500,
+                message: 'internal server error'
             })
         }
     }

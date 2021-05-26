@@ -21,7 +21,7 @@
   },
   {
     "TanggalSurat": "",
-    "NomorSurat": "03",
+    "NomorSurat": 3,
     "Tujuan": "",
     "Perihal": "",
     "Waktu": "",
@@ -31,7 +31,7 @@
   },
   {
     "TanggalSurat": "",
-    "NomorSurat": "04",
+    "NomorSurat": 4,
     "Tujuan": "",
     "Perihal": "",
     "Waktu": "",
@@ -41,7 +41,7 @@
   },
   {
     "TanggalSurat": "",
-    "NomorSurat": "05",
+    "NomorSurat": 5,
     "Tujuan": "",
     "Perihal": "",
     "Waktu": "",
@@ -51,7 +51,7 @@
   },
   {
     "TanggalSurat": "",
-    "NomorSurat": "06",
+    "NomorSurat": 6,
     "Tujuan": "",
     "Perihal": "",
     "Waktu": "",
@@ -61,7 +61,7 @@
   },
   {
     "TanggalSurat": "",
-    "NomorSurat": "07",
+    "NomorSurat": 7,
     "Tujuan": "",
     "Perihal": "",
     "Waktu": "",
@@ -190,7 +190,7 @@
     "File": ""
   },
   {
-    "TanggalSurat": "28 januari 2020",
+    "TanggalSurat": "28 januari 2021",
     "NomorSurat": "ND.20/REN/SUBDIT-PWAP/01/2021",
     "Tujuan": "Direktur",
     "Perihal": "Laporan Pembahasan Usulan Perhutanan Sosial pada Areal Kerja IUPHHK-HT PT Musi Hutan Persada dalam rangka PIAPS (Revisi VI)",
@@ -334,26 +334,6 @@
     "NomorSurat": "ND.34/REN/SUBDIT-PWAP/02/2021",
     "Tujuan": "Direktur",
     "Perihal": "Penyampaian Bahan Audiensi Pemuda Tani HKTI",
-    "Waktu": "",
-    "Tempat": "",
-    "PenyusunKonsep": "",
-    "File": ""
-  },
-  {
-    "TanggalSurat": "",
-    "NomorSurat": 35,
-    "Tujuan": "",
-    "Perihal": "",
-    "Waktu": "",
-    "Tempat": "",
-    "PenyusunKonsep": "",
-    "File": ""
-  },
-  {
-    "TanggalSurat": "",
-    "NomorSurat": 36,
-    "Tujuan": "",
-    "Perihal": "",
     "Waktu": "",
     "Tempat": "",
     "PenyusunKonsep": "",
@@ -791,7 +771,7 @@
   },
   {
     "TanggalSurat": "13 April 2021",
-    "NomorSurat": "ND.77/REN/SUBDIT-PWAP/04/2021",
+    "NomorSurat": 77,
     "Tujuan": "",
     "Perihal": "",
     "Waktu": "",

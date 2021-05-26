@@ -79,7 +79,6 @@ export default function VerticalTabs() {
       else if (location === '/user') setValue(4)
       else setValue(0)
       if (!loggedUser) dispatch(SET_USER())
-      console.log(loggedUser, '<<< loggedUser');
     }, [])
     
 
@@ -114,7 +113,6 @@ export default function VerticalTabs() {
                       }
                 })
                 dispatch(USER_LOGOUT())
-                console.log(loggedUser, '<<< logged user setelah logout 123');
                 localStorage.removeItem('access_token')
                 localStorage.removeItem('year')
                 localStorage.removeItem('name')

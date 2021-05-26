@@ -1,33 +1,23 @@
-// const tanggal = ['1 Januari 2021', '2 Januari 2021', '2 Februari 2021', '1 Februari 2021']
-// const newTanggal = tanggal.filter(surat => surat.includes('2022'))
-// const string = 'asdasdasdasdasdadede312e1yeyen12312jqhwkda'
-// const arrOfObj = [
-//     {
-//         name: 'asdad1231yayuk121njk121',
-//         tanggal
-//     },
-//     {
-//         name: 'asdad1231yeyen121njk121',
-//         tanggal : ['2 Februari 2022']
-//     }
+let rawData = require('./data/Surat Keluar.json')
+    rawData.forEach((surat, index) => {
+      if (!surat.TanggalSurat) surat.TanggalSurat = rawData[index - 1].TanggalSurat
+      if (!surat.Tujuan && !surat.Perihal) {
+        surat.Tujuan = 'booked'
+        surat.Perihal = 'booked'
+      }
+      surat.updatedAt = new Date()
+      surat.createdAt = new Date()
 
-// ]
-// let temp = []
-// // console.log(newTanggal);
-// // console.log(string.includes('yeyen'))
-// const find = 'agus'
-// arrOfObj.forEach(el => {
-//     let flag = false
-//     for (let key in el) {
-//         if (el[key].includes(find)) flag = true
-//         if (Array.isArray(el[key])) {
-//             el[key].forEach(str => {
-//                 if (str.includes(find)) flag = true
-//             })
-//         }
-//     }
-//     if (flag) temp.push(el)
-//     // if (el.name.includes('yayuk')) temp.push(el)
-// })
-// console.log(temp);
-// console.log(new Date());
+      if (typeof surat.NomorSurat === 'number') {
+        if (surat.NomorSurat < 10) {
+          surat.NomorSurat = `0${surat.NomorSurat}`
+        }
+        let month = new Date(surat.TanggalSurat).getMonth() + 1
+        const year = new Date(surat.TanggalSurat).getFullYear()
+        if (month < 10) month = `0${month}`
+        surat.NomorSurat = `S.${surat.NomorSurat}/REN/SUBDIT-PWAP/${month}/${year}`
+        console.log(surat.NomorSurat, '<<<<');
+      }
+    })
+
+console.log(typeof '03', '<<<<');

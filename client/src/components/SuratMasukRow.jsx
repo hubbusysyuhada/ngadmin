@@ -81,7 +81,7 @@ export default function Restaurant ({props}) {
               }
         }).then(({isConfirmed, isDenied}) => {
             if (isConfirmed) doc.save(`Disposisi Surat Masuk Agenda Subdit ${props.NoAgendaSubdit}.pdf`)
-            else if (isDenied) doc.output('dataurlnewwindow',{filename: `Disposisi Surat Masuk Agenda Subdit ${props.NoAgendaSubdit}.pdf`})        // doc.save('test.pdf')
+            else if (isDenied) doc.output('dataurlnewwindow',{filename: `Disposisi Surat Masuk Agenda Subdit ${props.NoAgendaSubdit}.pdf`})
         })
     }
 

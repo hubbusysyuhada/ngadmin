@@ -47,7 +47,6 @@ export function SET_USER () {
 }
 
 export function FETCH_USERS () {
-    console.log('masuk fetch user actions');
     return async (dispatch) => {
         const { data } = await axios.get('/user', {
             headers: {
@@ -162,7 +161,6 @@ export function DELETE_SURAT_MASUK (props) {
 // actions undangan masuk
 
 export function FETCH_UNDANGAN_MASUK () {
-    console.log('masuk action fetch undangan masuk');
     return async (dispatch) => {
         const {data} = await axios.get('/undanganmasuk', {
             headers: {
@@ -247,5 +245,113 @@ export function EDIT_UNDANGAN_MASUK (payload) {
             payload.Tanggal = `${newTanggal[2] < 10 ? newTanggal[2][1] : newTanggal[2]} ${months[newTanggal[1] - 1]} ${newTanggal[0]}`
         }
         dispatch({type: 'undanganmasuk/edit', payload})
+    }
+}
+
+// actions surat keluar
+
+export function FETCH_SURAT_KELUAR () {
+    return async (dispatch) => {
+        let {data} = await axios.get('/suratkeluar', {
+            headers: {
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        for (let i = 0; i < data.length; i++) {
+            data[i].index = i
+        }
+        dispatch({type: 'suratkeluar/fetch', payload: data})
+    }
+}
+
+export function EDIT_SURAT_KELUAR (payload) {
+    return (dispatch) => {
+        // axios di sini sebelum reassign bentuk tanggal baru
+        axios.put(`/suratkeluar/${payload.id}`, {
+            TanggalSurat: payload.TanggalSurat,
+            NomorSurat: payload.NomorSurat,
+            type: payload.type,
+            Tujuan: payload.Tujuan,
+            Perihal: payload.Perihal,
+            Waktu: payload.Waktu,
+            Tempat: payload.Tempat,
+            PenyusunKonsep: payload.PenyusunKonsep,
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
+        if (payload.TanggalSurat !== '-') {
+            let newTanggalSurat = payload.TanggalSurat.split('-')
+            payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
+        }
+        dispatch({type: 'suratkeluar/edit', payload})
+    }
+}
+
+export function DELETE_SURAT_KELUAR (props) {
+    return (dispatch) => {
+        axios.delete(`/suratkeluar/${props.id}`, {
+            headers: {
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        dispatch({type: 'suratkeluar/delete', payload: props})
+    }
+}
+
+export function ADD_SURAT_KELUAR (payload) {
+    return async (dispatch) => {
+        await axios.post('/suratkeluar/new', {
+            TanggalSurat: payload.TanggalSurat,
+            Tujuan: payload.Tujuan,
+            Perihal: payload.Perihal,
+            Waktu: payload.Waktu,
+            Tempat: payload.Tempat,
+            PenyusunKonsep: payload.PenyusunKonsep,
+            type: payload.type
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                year: localStorage.getItem('year')
+            }
+        })
+        let {data} = await axios.get('/suratkeluar', {
+            headers: {
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        for (let i = 0; i < data.length; i++) {
+            data[i].index = i
+        }
+        dispatch({type: 'suratkeluar/fetch', payload: data})
+    }
+}
+
+export function BOOK_SURAT_KELUAR (payload) {
+    return async (dispatch) => {
+        await axios.post('/suratkeluar/book', {
+            TanggalSurat: payload.TanggalSurat,
+            ammount: payload.ammount,
+            type: payload.type
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                year: localStorage.getItem('year')
+            }
+        })
+        let {data} = await axios.get('/suratkeluar', {
+            headers: {
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        for (let i = 0; i < data.length; i++) {
+            data[i].index = i
+        }
+        dispatch({type: 'suratkeluar/fetch', payload: data})
     }
 }

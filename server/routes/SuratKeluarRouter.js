@@ -7,6 +7,7 @@ router.get('/:id', SuratKeluarController.fetchOne)
 router.put('/:id', SuratKeluarController.editOne)
 router.post('/new', SuratKeluarController.createNew)
 router.post('/book', SuratKeluarController.bookMany)
+router.delete('/:id', SuratKeluarController.deleteOne)
 
 // router.delete('/:id', SuratMasukController.deleteOne)
 
