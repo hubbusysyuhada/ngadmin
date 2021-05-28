@@ -435,7 +435,7 @@ export default function SuratKeluar () {
                 >
                     Buat baru
                 </Button>
-                <Button onClick={handleAddClose} color="primary">
+                <Button onClick={handleBookClose} color="primary">
                     Cancel
                 </Button>
                 <Button

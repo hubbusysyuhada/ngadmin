@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-const { SPTKeluarReducer } = require('./SPTKeluarReducer')
+const { SPTKeluarReducer } = require('./SPTReducer')
 const { SuratKeluarReducer } = require('./SuratKeluarReducer')
 const { SuratMasukReducer } = require('./SuratMasukReducer')
 const { UndanganMasukReducer } = require('./UndanganMasukReducer')

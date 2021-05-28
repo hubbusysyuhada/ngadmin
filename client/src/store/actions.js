@@ -355,3 +355,104 @@ export function BOOK_SURAT_KELUAR (payload) {
         dispatch({type: 'suratkeluar/fetch', payload: data})
     }
 }
+
+// actions SPT
+
+export function FETCH_SPT () {
+    return async (dispatch) => {
+        let {data} = await axios.get('/spt', {
+            headers: {
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        for (let i = 0; i < data.length; i++) {
+            data[i].index = i
+        }
+        dispatch({type: 'spt/fetch', payload: data})
+    }
+}
+
+export function ADD_SPT (payload) {
+    return async (dispatch) => {
+        payload.Ditujukan = JSON.parse(JSON.stringify(payload.Ditujukan)).split(',')
+        for (let i = 0; i < payload.Ditujukan.length; i++) payload.Ditujukan[i] = payload.Ditujukan[i].trim()
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
+        let temp = payload.TanggalSurat.split('-')
+        payload.TanggalSurat = `${temp[2]} ${months[+(temp[1]) - 1]} ${temp[0]}`
+        await axios.post('/spt/new', {
+            TanggalSurat: payload.TanggalSurat,
+            Ditujukan: JSON.stringify(payload.Ditujukan),
+            DalamRangka: payload.DalamRangka,
+            Waktu: payload.Waktu,
+            Tempat: payload.Tempat,
+            PenyusunKonsep: payload.PenyusunKonsep,
+            type: payload.type
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                year: localStorage.getItem('year')
+            }
+        })
+        let {data} = await axios.get('/spt', {
+            headers: {
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        for (let i = 0; i < data.length; i++) {
+            data[i].index = i
+        }
+        dispatch({type: 'spt/fetch', payload: data})
+    }
+}
+
+export function BOOK_SPT (payload) {
+    return async (dispatch) => {
+        await axios.post('/spt/book', {
+            TanggalSurat: payload.TanggalSurat,
+            ammount: payload.ammount
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                year: localStorage.getItem('year')
+            }
+        })
+        let {data} = await axios.get('/spt', {
+            headers: {
+                year: localStorage.getItem('year'),
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        for (let i = 0; i < data.length; i++) {
+            data[i].index = i
+        }
+        dispatch({type: 'spt/fetch', payload: data})
+    }
+}
+
+export function EDIT_SPT (payload) {
+    return (dispatch) => {
+        // axios di sini sebelum reassign bentuk tanggal baru
+        axios.put(`/suratkeluar/${payload.id}`, {
+            TanggalSurat: payload.TanggalSurat,
+            NomorSurat: payload.NomorSurat,
+            type: payload.type,
+            Tujuan: payload.Tujuan,
+            Perihal: payload.Perihal,
+            Waktu: payload.Waktu,
+            Tempat: payload.Tempat,
+            PenyusunKonsep: payload.PenyusunKonsep,
+        }, {
+            headers: {
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
+        if (payload.TanggalSurat !== '-') {
+            let newTanggalSurat = payload.TanggalSurat.split('-')
+            payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
+        }
+        dispatch({type: 'suratkeluar/edit', payload})
+    }
+}

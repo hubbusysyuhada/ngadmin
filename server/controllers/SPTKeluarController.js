@@ -5,11 +5,11 @@ class SPTKeluarController {
     static async fetchAll (req, res, next) {
         try {
             const {year} = req.headers
-            const response = await SPTKeluar.findAll()
+            const response = await SPTKeluar.findAll({order: [['id', 'ASC']]})
             let temp = response.filter(spt => spt.TanggalSurat.includes(year))
             temp.forEach(spt => {
                 spt.sortingDate = new Date(spt.TanggalSurat)
-                if (spt.Ditujukan) spt.Ditujukan = JSON.parse(spt.Ditujukan)
+                if (spt.Ditujukan && spt.Ditujukan !== 'booked') spt.Ditujukan = JSON.parse(spt.Ditujukan)
             });
             temp = temp.sort((a,b) => a.sortingDate < b.sortingDate ? -1 : 0)
             res.status(200).json(temp)
@@ -52,7 +52,7 @@ class SPTKeluarController {
                 File: req.body.File,
                 PenyusunKonsep: req.body.PenyusunKonsep
             }
-            if (answer.Ditujukan) {
+            if (answer.Ditujukan && answer.Ditujukan !== 'booked') {
                 answer.Ditujukan = answer.Ditujukan.split(',')
                 answer.Ditujukan = answer.Ditujukan.map(name => name.trim())
                 answer.Ditujukan = JSON.stringify(answer.Ditujukan)
@@ -100,11 +100,6 @@ class SPTKeluarController {
             })
             const formattedDate = changeDateFormat(answer.TanggalSurat)
             answer.NomorSurat = `ST.${newNumber}/REN/SUBDIT-PWAP/${formattedDate.month}/${formattedDate.year}`
-            // if (answer.Ditujukan) {
-            //     answer.Ditujukan = answer.Ditujukan.split(',')
-            //     answer.Ditujukan = answer.Ditujukan.map(name => name.trim())
-            //     answer.Ditujukan = JSON.stringify(answer.Ditujukan)
-            // }
             const response = await SPTKeluar.create(answer)
             res.status(201).json(response)
         } catch (error) {
@@ -121,7 +116,6 @@ class SPTKeluarController {
     static async bookSPT (req, res, next) {
         try {
             let {ammount, TanggalSurat} = req.body
-            console.log(ammount, '<<< ammount');
             const formattedDate = new Date(`${TanggalSurat} 12:00:00`)
             const year = formattedDate.getFullYear()
             let month = formattedDate.getMonth()  + 1
@@ -142,10 +136,10 @@ class SPTKeluarController {
                 let temp = {
                     TanggalSurat,
                     NomorSurat: `ST.${newNumber}/REN/SUBDIT-PWAP/${month}/${year}`,
-                    Ditujukan: '',
-                    DalamRangka: '',
-                    Waktu: '',
-                    Tempat: '',
+                    Ditujukan: 'booked',
+                    DalamRangka: 'booked',
+                    Waktu: 'booked',
+                    Tempat: 'booked',
                     File: '',
                     PenyusunKonsep: ''
                 }
@@ -161,6 +155,23 @@ class SPTKeluarController {
                 message: 'not found'
             })
         }
+    }
+
+    static async deleteOne (req, res, next) {
+        try {
+            const {id} = req.params
+            await SPTKeluar.destroy({where: {id}})
+            res.status(200).json({message: 'delete success'})
+        } catch (error) {
+            console.log(error, '<<< error')
+            if (error) next(error)
+            else next({
+                name: 'custom error',
+                code: 404,
+                message: 'not found'
+            })
+        }
+
     }
 }
 

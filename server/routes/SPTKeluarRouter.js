@@ -7,7 +7,7 @@ router.get('/:id', SPTKeluarController.fetchOne)
 router.put('/:id', SPTKeluarController.editOne)
 router.post('/new', SPTKeluarController.newSPT)
 router.post('/book', SPTKeluarController.bookSPT)
-
+router.delete('/:id', SPTKeluarController.deleteOne)
 // router.delete('/:id', SuratMasukController.deleteOne)
 
 module.exports = router

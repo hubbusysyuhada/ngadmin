@@ -18,18 +18,14 @@ import {
     DialogContent,
     DialogActions,
     Snackbar,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem
 } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux'
 import Navbar from '../components/Navbar'
 import loading_gif from '../assets/loading.gif'
-import { FETCH_SURAT_KELUAR, ADD_SURAT_KELUAR, BOOK_SURAT_KELUAR } from '../store/actions';
-import SuratKeluarRow from '../components/SuratKeluarRow'
+import { FETCH_SURAT_KELUAR, ADD_SURAT_KELUAR, BOOK_SURAT_KELUAR, FETCH_SPT, ADD_SPT, BOOK_SPT } from '../store/actions';
+import SPTRow from '../components/SPTRow'
 
 const useStyle = makeStyles({
     text : {
@@ -55,9 +51,9 @@ function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function SuratKeluar () {
+export default function SPT () {
     const dispatch = useDispatch()
-    const suratKeluarData = useSelector(state => state.SuratKeluarReducer.datas)
+    const state_spt = useSelector(state => state.SPTKeluarReducer.datas)
     const [filteredArray, setFilteredArray] = useState(null)
     const [openAddDialog, setOpenAddDialog] = useState(false)
     const [openBookDialog, setOpenBookDialog] = useState(false)
@@ -75,12 +71,11 @@ export default function SuratKeluar () {
     today = `${today[2]}-${today[0]}-${today[1]}`
     const [newForm, setNewForm] = useState({
         TanggalSurat: today,
-        Tujuan: null,
-        Perihal: null,
+        Ditujukan: null,
+        DalamRangka: null,
         Waktu: null,
         Tempat: null,
         PenyusunKonsep: null,
-        type: "ND"
     })
     const [bookForm, setBookForm] = useState({
         TanggalSurat: today,
@@ -91,20 +86,24 @@ export default function SuratKeluar () {
         if (!localStorage.getItem('access_token')) {
             history.push('/auth')
         } else {
-            dispatch(FETCH_SURAT_KELUAR())
+            dispatch(FETCH_SPT())
         }
     }, [])
 
     useEffect(() => {
         if (filter) {
-            let filtered = suratKeluarData.filter(surat => (
-                surat.Perihal?.toLowerCase().includes(filter)
+            let filtered = state_spt.filter(surat => (
+                surat.DalamRangka?.toLowerCase().includes(filter)
                 ||
                 surat.NomorSurat?.toLowerCase().includes(filter)
                 ||
                 surat.TanggalSurat?.toLowerCase().includes(filter)
                 ||
-                surat.Tujuan?.toLowerCase().includes(filter)
+                surat.Waktu?.toLowerCase().includes(filter)
+                ||
+                surat.Tempat?.toLowerCase().includes(filter)
+                ||
+                (surat.Ditujukan && surat.Ditujukan !== 'booked' ? surat.Ditujukan.join().toLowerCase().includes(filter) : '')
             ))
             setPage(0)
             setFilteredArray(filtered)
@@ -125,12 +124,11 @@ export default function SuratKeluar () {
     const handleAddClose = () => {
         setNewForm({
             TanggalSurat: today,
-            Tujuan: null,
-            Perihal: null,
+            Ditujukan: null,
+            DalamRangka: null,
             Waktu: null,
             Tempat: null,
             PenyusunKonsep: null,
-            type: null
         })
         setOpenAddDialog(false);
     };
@@ -159,16 +157,16 @@ export default function SuratKeluar () {
                 <Grid item xs={10} className={style.item}>
                     <div style={{marginTop: '10px'}}>
                         <Typography variant="h3" className={style.text}>
-                            SURAT KELUAR
+                            SPT
                         </Typography>
                         <Typography variant="h5" className={style.text}>
                             {localStorage.getItem('year')}
                         </Typography>
                         <br/>
-                            {suratKeluarData ?
+                            {state_spt ?
                                 <>
                                     <div style={{textAlign: 'left', width: '95%', marginLeft: '4%', marginBottom: '10px', marginTop: '0', display: 'flex', justifyContent: 'space-between'}}>
-                                        <TextField label="Cari Surat Keluar" size="small" style={{width: '300px', margin: '20px', textAlign: 'left'}} onChange={(e) => setFilter(e.target.value)} helperText="Nomor Surat, Perihal, Tanggal, Tujuan"/>
+                                        <TextField label="Cari Surat Keluar" size="small" style={{width: '350px', margin: '20px', textAlign: 'left'}} onChange={(e) => setFilter(e.target.value)} helperText="Dalam Rangka, Nomor Surat, Tanggal, Tempat, Tujuan"/>
                                         <Button size='small' variant='contained' color='primary' style={{width: '100px', margin: '20px', marginRight: '4%', height: '30px', marginTop: '60px'}} onClick={() => setOpenAddDialog(true)}>NEW</Button>
                                     </div>
                                     <Paper className={style.tableRoot}>
@@ -197,7 +195,7 @@ export default function SuratKeluar () {
                                                     <TableCell
                                                         align={'right'}
                                                         style={{ width: '40%', textAlign: 'center' }}
-                                                    >Perihal
+                                                    >Dalam Rangka
                                                     </TableCell>
                                                 </TableRow>
                                                 </TableHead>
@@ -209,16 +207,16 @@ export default function SuratKeluar () {
                                                     :
                                                     filteredArray).map((SuratKeluar) => {
                                                         return (
-                                                            <SuratKeluarRow props={SuratKeluar} />
+                                                            <SPTRow props={SuratKeluar} />
                                                         )
                                                     })
 
                                                     :
-                                                    suratKeluarData ? (rowsPerPage > 0 ? suratKeluarData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                    state_spt ? (rowsPerPage > 0 ? state_spt.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                                     :
-                                                    suratKeluarData).map((SuratKeluar) => {
+                                                    state_spt).map((SuratKeluar) => {
                                                         return (
-                                                            <SuratKeluarRow props={SuratKeluar} />
+                                                            <SPTRow props={SuratKeluar} />
                                                         )
                                                     }): ''}
                                                 </TableBody>
@@ -227,7 +225,7 @@ export default function SuratKeluar () {
                                         <TablePagination
                                         rowsPerPageOptions={[10, 25, 50]}
                                         component="div"
-                                        count={filteredArray ? filteredArray.length : suratKeluarData ? suratKeluarData.length : 0}
+                                        count={filteredArray ? filteredArray.length : state_spt ? state_spt.length : 0}
                                         rowsPerPage={rowsPerPage}
                                         page={page}
                                         onChangePage={handleChangePage}
@@ -250,12 +248,12 @@ export default function SuratKeluar () {
             {/* SNACKBARS */}
             <Snackbar open={openAddSuccessSnackbar} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
                 <Alert onClose={handleClose} severity="success">
-                    Surat Berhasil Ditambahkan
+                    SPT Berhasil Ditambahkan
                 </Alert>
             </Snackbar>
             <Snackbar open={openBookSuccessSnackbar} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
                 <Alert onClose={handleClose} severity="success">
-                    Berhasil Book Surat Sebanyak {bookForm.ammount}
+                    Berhasil Book SPT Sebanyak {bookForm.ammount}
                 </Alert>
             </Snackbar>
             <Snackbar open={openAddErrorSnackbar} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
@@ -266,7 +264,7 @@ export default function SuratKeluar () {
 
             {/* DIALOGS */}
             <Dialog open={openAddDialog} onClose={handleAddClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Buat Surat Baru</DialogTitle>
+                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Buat SPT Baru</DialogTitle>
                 <DialogContent>
                     <TextField
                         margin="dense"
@@ -283,24 +281,25 @@ export default function SuratKeluar () {
                     />
                     <TextField
                         margin="dense"
-                        label="Tujuan"
+                        label="Ditujukan"
+                        helperText='Pisahkan dengan koma(",")'
                         type="text"
-                        value={newForm.Tujuan}
+                        value={newForm.Ditujukan}
                         onChange={(e) => {
                             setNewForm({
-                                ...newForm, Tujuan: e.target.value
+                                ...newForm, Ditujukan: e.target.value
                             })
                         }}
                         fullWidth
                     />
                     <TextField
                         margin="dense"
-                        label="Perihal"
+                        label="Dalam Rangka"
                         type="text"
-                        value={newForm.Perihal}
+                        value={newForm.DalamRangka}
                         onChange={(e) => {
                             setNewForm({
-                                ...newForm, Perihal: e.target.value
+                                ...newForm, DalamRangka: e.target.value
                             })
                         }}
                         fullWidth
@@ -341,26 +340,6 @@ export default function SuratKeluar () {
                         }}
                         fullWidth
                     />
-                    <FormControl fullWidth size="small">
-                        <InputLabel>Type</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-label"
-                        id="year-selection"
-                        name="Type"
-                        defaultValue={newForm.type}
-                        onChange={(e) => {
-                            setNewForm({
-                                ...newForm, type: e.target.value
-                            })
-                        }}
-                        label="Type"
-                        style={{textAlign: 'left'}}
-                    >
-                        <MenuItem value={"ND"}>Nota Dinas</MenuItem>
-                        <MenuItem value={"S"}>Surat</MenuItem>
-                        <MenuItem value={"UN"}>Undangan</MenuItem>
-                    </Select>
-                </FormControl>
                 </DialogContent>
                 <DialogActions>
                 <Button
@@ -370,7 +349,7 @@ export default function SuratKeluar () {
                     }}
                     color="primary"
                 >
-                    Book Surat
+                    Book SPT
                 </Button>
                 <Button onClick={handleAddClose} color="primary">
                     Cancel
@@ -380,7 +359,7 @@ export default function SuratKeluar () {
                     event.preventDefault()
                     const payload = JSON.parse(JSON.stringify(newForm))
                     handleAddClose()
-                    dispatch(ADD_SURAT_KELUAR(payload))
+                    dispatch(ADD_SPT(payload))
                     setOpenAddSuccessSnackbar(true)
 
                 }}
@@ -391,7 +370,7 @@ export default function SuratKeluar () {
             </Dialog>
 
             <Dialog open={openBookDialog} onClose={handleBookClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Book Surat Keluar</DialogTitle>
+                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Book SPT</DialogTitle>
                 <DialogContent>
                     <TextField
                         margin="dense"
@@ -442,8 +421,8 @@ export default function SuratKeluar () {
                 onClick={(event) => {
                     event.preventDefault()
                     const payload = JSON.parse(JSON.stringify(bookForm))
-                    payload.type = 'S'
-                    dispatch(BOOK_SURAT_KELUAR(payload))
+                    // dispatch(BOOK_SURAT_KELUAR(payload))
+                    dispatch(BOOK_SPT(payload))
                     handleBookClose()
                     setOpenBookSuccessSnackbar(true)
                 }}
