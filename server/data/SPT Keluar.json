@@ -1,21 +1,21 @@
 [
   {
     "TanggalSurat": "4 Januari 2021",
-    "NomorSurat": 1,
-    "Ditujukan": "",
-    "DalamRangka": "",
-    "Waktu": "",
-    "Tempat": "",
+    "NomorSurat": "ST.01/REN/SUBDIT-PWAP/1/2021",
+    "Ditujukan": "Adli",
+    "DalamRangka": "Menyusun Rencana Kerja PEH Tahun 2021",
+    "Waktu": "1-8 Januari 2021",
+    "Tempat": "Jakarta",
     "File": "",
     "PenyusunKonsep": ""
   },
   {
-    "TanggalSurat": "",
-    "NomorSurat": 2,
-    "Ditujukan": "",
-    "DalamRangka": "",
-    "Waktu": "",
-    "Tempat": "",
+    "TanggalSurat": "11 Januari 2021",
+    "NomorSurat": "ST.02/REN/SUBDIT-PWAP/1/2021",
+    "Ditujukan": "Adli",
+    "DalamRangka": "Menelaah Peta dan Data Terkait dengan Peta Indikatif dan Areal Perhutanan Sosial Revisi VI Provinsi D.I Yogyakarta",
+    "Waktu": "11-14 Januari 2021",
+    "Tempat": "Jakarta",
     "File": "",
     "PenyusunKonsep": ""
   },
@@ -80,7 +80,7 @@
     "PenyusunKonsep": ""
   },
   {
-    "TanggalSurat": "4 Maret 2021",
+    "TanggalSurat": "4 MAret 2021",
     "NomorSurat": "ST.09/REN/SUBDIT-PWAP/03/2021",
     "Ditujukan": "Staf",
     "DalamRangka": "Rapat Usulan Revisi Pembahasan Wilayah KPH Prov Kalimantan Selatan",
@@ -203,11 +203,11 @@
     "TanggalSurat": "25 Maret 2021",
     "NomorSurat": "ST.21/REN/SUBDIT-PWAP/03/2021",
     "Ditujukan": "Gitri, Dhani",
-    "DalamRangka": "Pembahasan Permohonan Kemitraan Kehutanan Kab Pesawaran",
+    "DalamRangka": "PEmbahasan Permohonan Kemitraan Kehutanan Kab Pesawaran",
     "Waktu": "26 Maret 2021",
     "Tempat": "Bogor",
     "File": "",
-    "PenyusunKonsep": "dhani"
+    "PenyusunKonsep": "dhanio"
   },
   {
     "TanggalSurat": "",
@@ -306,6 +306,116 @@
     "DalamRangka": "",
     "Waktu": "",
     "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "",
+    "NomorSurat": 32,
+    "Ditujukan": "",
+    "DalamRangka": "",
+    "Waktu": "",
+    "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "",
+    "NomorSurat": 33,
+    "Ditujukan": "",
+    "DalamRangka": "",
+    "Waktu": "",
+    "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "23 April 2021",
+    "NomorSurat": "ST.34/REN/SUBDIT-PWAP/04/2021",
+    "Ditujukan": "Yana Indra",
+    "DalamRangka": "Training Data Sahring",
+    "Waktu": "29 April 2021",
+    "Tempat": "Sheraton",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "",
+    "NomorSurat": 35,
+    "Ditujukan": "",
+    "DalamRangka": "",
+    "Waktu": "",
+    "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "",
+    "NomorSurat": 36,
+    "Ditujukan": "",
+    "DalamRangka": "",
+    "Waktu": "",
+    "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "",
+    "NomorSurat": 37,
+    "Ditujukan": "",
+    "DalamRangka": "",
+    "Waktu": "",
+    "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "29 April 2021",
+    "NomorSurat": "ST.38/REN/SUBDIT-PWAP/04/2021",
+    "Ditujukan": "Yana, Nila",
+    "DalamRangka": "Rapat Koordinasi PMU",
+    "Waktu": "30 Apr- 1 May",
+    "Tempat": "pullman sudirman",
+    "File": "",
+    "PenyusunKonsep": "nila"
+  },
+  {
+    "TanggalSurat": "",
+    "NomorSurat": 39,
+    "Ditujukan": "",
+    "DalamRangka": "",
+    "Waktu": "",
+    "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "",
+    "NomorSurat": 40,
+    "Ditujukan": "",
+    "DalamRangka": "",
+    "Waktu": "",
+    "Tempat": "",
+    "File": "",
+    "PenyusunKonsep": ""
+  },
+  {
+    "TanggalSurat": "3 May 2021",
+    "NomorSurat": "ST.41/REN/SUBDIT-PWAP/05/2021",
+    "Ditujukan": "Yana, Gitri, Nila",
+    "DalamRangka": "Penyelesaian pending matters keg HLN",
+    "Waktu": "4 May 2021",
+    "Tempat": "Grand Savero Bogor",
+    "File": "",
+    "PenyusunKonsep": "nila"
+  },
+  {
+    "TanggalSurat": "3 May 2021",
+    "NomorSurat": "ST.42/REN/SUBDIT-PWAP/05/2021",
+    "Ditujukan": "Adli",
+    "DalamRangka": "Menelaah Peta dan Data Terkait dengan pembuatan peta areal kerja Kesatuan Pengelolaan Hutan Lindung dan Kesatuan Pengelolaan Hutan Produksi di Provinsi Bengkulu",
+    "Waktu": "3-21 May 2021",
+    "Tempat": "Jakarta",
     "File": "",
     "PenyusunKonsep": ""
   }

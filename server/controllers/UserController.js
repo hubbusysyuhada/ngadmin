@@ -50,7 +50,7 @@ class UserController {
             code: 401,
             message: 'unauthorized'
         })
-        const data = await User.findAll()
+        const data = await User.findAll({order: [['id', 'ASC']]})
         let temp = []
         data.forEach(userDB => {
             if (userDB.username !== 'admin') {

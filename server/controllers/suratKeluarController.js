@@ -5,7 +5,7 @@ class SuratKeluarController {
     static async fetchAll (req, res, next) {
         try {
             const {year} = req.headers
-            const response = await SuratKeluar.findAll()
+            const response = await SuratKeluar.findAll({order: [['id', 'ASC']]})
             let temp = response.filter(spt => spt.TanggalSurat.includes(year))
             temp.forEach(spt => {
                 spt.sortingDate = new Date(spt.TanggalSurat)
