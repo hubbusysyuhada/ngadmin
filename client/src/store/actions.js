@@ -433,13 +433,15 @@ export function BOOK_SPT (payload) {
 
 export function EDIT_SPT (payload) {
     return (dispatch) => {
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
+        let newTanggalSurat = payload.TanggalSurat.split('-')
+        payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
         // axios di sini sebelum reassign bentuk tanggal baru
-        axios.put(`/suratkeluar/${payload.id}`, {
+        axios.put(`/spt/${payload.id}`, {
             TanggalSurat: payload.TanggalSurat,
             NomorSurat: payload.NomorSurat,
-            type: payload.type,
-            Tujuan: payload.Tujuan,
-            Perihal: payload.Perihal,
+            Ditujukan: payload.Ditujukan,
+            DalamRangka: payload.DalamRangka,
             Waktu: payload.Waktu,
             Tempat: payload.Tempat,
             PenyusunKonsep: payload.PenyusunKonsep,
@@ -448,11 +450,22 @@ export function EDIT_SPT (payload) {
                 access_token: localStorage.getItem('access_token')
             }
         })
-        const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
-        if (payload.TanggalSurat !== '-') {
-            let newTanggalSurat = payload.TanggalSurat.split('-')
-            payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
-        }
-        dispatch({type: 'suratkeluar/edit', payload})
+
+        payload.Ditujukan = payload.Ditujukan.split(',')
+        payload.Ditujukan.forEach(person => person = person.trim())
+        
+
+        dispatch({type: 'spt/edit', payload})
+    }
+}
+
+export function DELETE_SPT (props) {
+    return (dispatch) => {
+        axios.delete(`/spt/${props.id}`, {
+            headers: {
+                access_token: localStorage.getItem('access_token')
+            }
+        })
+        dispatch({type: 'spt/delete', payload: props})
     }
 }

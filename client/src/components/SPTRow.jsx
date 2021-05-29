@@ -13,17 +13,10 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Select,
-    MenuItem,
-    InputLabel,
-    FormControl,
-    FormHelperText
 } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert';
-import { IoDocumentText } from "react-icons/io5";
-import { IconContext } from 'react-icons'
 import { useDispatch } from 'react-redux'
-import { EDIT_SURAT_MASUK, DELETE_SURAT_MASUK, EDIT_SURAT_KELUAR, DELETE_SURAT_KELUAR } from '../store/actions'
+import { DELETE_SPT, EDIT_SPT } from '../store/actions'
 import Swal from 'sweetalert2'
 
 function Alert(props) {
@@ -35,7 +28,6 @@ export default function Restaurant ({props}) {
     const [openEditDialog, setOpenEditDialog] = useState(false)
     const [openEditSuccessSnackbar, setOpenEditSuccessSnackbar] = useState(false)
     let [nomor, setNomor] = useState(props.NomorSurat.split('.')[1])
-    let [type, setType] = useState(props.NomorSurat.split('.')[0])
     const [openEditErrorSnackbar, setOpenEditErrorSnackbar] = useState(false)
     const [open, setOpen] = useState({
         id: null,
@@ -87,7 +79,7 @@ export default function Restaurant ({props}) {
         })
     }
 
-    function deleteSurat () {
+    function deleteSPT () {
         Swal.fire({
             icon: 'question',
             title: `Delete ${props.NomorSurat}?`,
@@ -103,7 +95,7 @@ export default function Restaurant ({props}) {
               }
         }).then(({isConfirmed}) => {
             if (isConfirmed) {
-                dispatch(DELETE_SURAT_KELUAR(props))
+                dispatch(DELETE_SPT(props))
             }
         })
     }
@@ -145,7 +137,6 @@ export default function Restaurant ({props}) {
                                         props.Ditujukan.map(person => <li>{person}</li>)
                                     }
                                 </ul>
-                                // props.Ditujukan 
                             :
                                 '-'
                         }
@@ -164,8 +155,8 @@ export default function Restaurant ({props}) {
                     </Typography>
                     <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
                     <div style={{textAlign: 'right', paddingRight: '2%'}}>
-                        <Button variant="contained" color="secondary" onClick={deleteSurat} style={{height: '30px', marginRight: '10px'}}>DELETE</Button>
-                        <Button variant="contained" color="primary" onClick={handleEditClickOpen} style={{height: '30px'}}>EDIT</Button>
+                        <Button variant="contained" color="secondary" onClick={deleteSPT} style={{height: '30px', marginRight: '5px', marginLeft: '5px'}}>DELETE</Button>
+                        <Button variant="contained" color="primary" onClick={handleEditClickOpen} style={{height: '30px', marginRight: '5px', marginLeft: '5px'}}>EDIT</Button>
                     </div>
                     </Box>
                 </Collapse>
@@ -226,28 +217,6 @@ export default function Restaurant ({props}) {
                         disabled
                         fullWidth
                     />
-                    <FormControl fullWidth size="small">
-                        <InputLabel>Type</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-label"
-                        id="year-selection"
-                        name="Type"
-                        value={type}
-                        onChange={(e) => {
-                            setType(e.target.value)
-                            setEditFormValue({
-                                ...editFormValue,
-                                NomorSurat: `${e.target.value}.${nomor}`
-                            })
-                        }}
-                        label="Type"
-                        style={{textAlign: 'left'}}
-                        >
-                            <MenuItem value={"ND"}>Nota Dinas</MenuItem>
-                            <MenuItem value={"S"}>Surat</MenuItem>
-                            <MenuItem value={"UN"}>Undangan</MenuItem>
-                        </Select>
-                    </FormControl>
                     <TextField
                         margin="dense"
                         label="Ditujukan"
@@ -258,6 +227,7 @@ export default function Restaurant ({props}) {
                                 ...editFormValue, Ditujukan: e.target.value
                             })
                         }}
+                        helperText='Pisahkan dengan koma(",")'
                         fullWidth
                     />
                     <TextField
@@ -307,12 +277,11 @@ export default function Restaurant ({props}) {
                         ...editFormValue,
                         id: props.id,
                         index: props.index,
-                        type
                     })
 
                     handleEditClose()
                     setOpenEditSuccessSnackbar(true)
-                    dispatch(EDIT_SURAT_KELUAR(payload))
+                    dispatch(EDIT_SPT(payload))
                     let tempTanggalSurat = payload.TanggalSurat ? new Date(`${payload.TanggalSurat} 12:00:00`).toISOString().split('T')[0] : '-'
                     const temp = ({
                         ...payload,

@@ -24,7 +24,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux'
 import Navbar from '../components/Navbar'
 import loading_gif from '../assets/loading.gif'
-import { FETCH_SURAT_KELUAR, ADD_SURAT_KELUAR, BOOK_SURAT_KELUAR, FETCH_SPT, ADD_SPT, BOOK_SPT } from '../store/actions';
+import { FETCH_SPT, ADD_SPT, BOOK_SPT } from '../store/actions';
 import SPTRow from '../components/SPTRow'
 
 const useStyle = makeStyles({
@@ -421,7 +421,6 @@ export default function SPT () {
                 onClick={(event) => {
                     event.preventDefault()
                     const payload = JSON.parse(JSON.stringify(bookForm))
-                    // dispatch(BOOK_SURAT_KELUAR(payload))
                     dispatch(BOOK_SPT(payload))
                     handleBookClose()
                     setOpenBookSuccessSnackbar(true)
@@ -431,8 +430,6 @@ export default function SPT () {
                 </Button>
                 </DialogActions>
             </Dialog>
-
-
         </div>
     )
     

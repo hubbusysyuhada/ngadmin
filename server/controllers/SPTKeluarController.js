@@ -119,7 +119,7 @@ class SPTKeluarController {
             const formattedDate = new Date(`${TanggalSurat} 12:00:00`)
             const year = formattedDate.getFullYear()
             let month = formattedDate.getMonth()  + 1
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
             TanggalSurat = `${formattedDate.getDate()} ${months[month - 1]} ${year}`
             if (month < 10) month = '0' + month
             const last = await SPTKeluar.findAll({order: [['id', 'DESC']], limit: 1})
