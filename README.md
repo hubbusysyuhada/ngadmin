@@ -1,4 +1,4 @@
-# CHEF'S CHOICE APP
+# NGADMIN APP
 > Javascript-based application to ease up your administration task
 >
 > Personal Project by Muhammad Hafidz Hubbusysyuhada
