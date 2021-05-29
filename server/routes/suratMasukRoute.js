@@ -1,4 +1,4 @@
-const SuratMasukController = require('../controllers/SuratMasukController')
+const SuratMasukController = require('../controllers/suratMasukController')
 const router = require('express').Router()
 
 // surat masuk
