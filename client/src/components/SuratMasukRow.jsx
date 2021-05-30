@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import img64 from '../assets/disposisi.jpg'
 import {jsPDF} from 'jspdf'
 import {

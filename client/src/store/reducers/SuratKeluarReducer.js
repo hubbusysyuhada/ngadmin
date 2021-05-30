@@ -1,5 +1,5 @@
 const initialState = {
-    datas : []
+    datas : null
 }
 
 function SuratKeluarReducer (state = initialState, action) {
@@ -26,6 +26,4 @@ function SuratKeluarReducer (state = initialState, action) {
     return {...state}
 }
 
-module.exports = {
-    SuratKeluarReducer
-}
+export default SuratKeluarReducer

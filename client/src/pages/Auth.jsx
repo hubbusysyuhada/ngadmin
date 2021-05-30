@@ -55,7 +55,6 @@ export default function Auth () {
     const loggedUser = useSelector(state => state.AuthReducer.loggedUser)
     const style = useStyle()
     const history = useHistory()
-    const [status, setStatus] = useState('login')
     const [openError, setOpenError] = useState(false)
     const [openRegError, setOpenRegError] = useState(false)
     const [yearIsFilled, setYearIsFilled] = useState(true)
@@ -66,6 +65,9 @@ export default function Auth () {
         year: ''
     })
 
+    console.log(loggedUser, '<<<< logged user');
+    console.log(openSuccess, '<<<< open success');
+
     useEffect(() => {
         if (loginError) {
             setOpenError(true)
@@ -74,7 +76,7 @@ export default function Auth () {
     }, [loginError])
 
     useEffect(() => {
-        if (loggedUser) {
+        if (loggedUser && loggedUser.access_token && loggedUser.name && localStorage.getItem('access_token') && localStorage.getItem('year') && localStorage.getItem('name')) {
             setOpenSuccess(true)
             setTimeout(() => {
                 setOpenSuccess(false)

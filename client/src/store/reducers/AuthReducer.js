@@ -26,6 +26,4 @@ function AuthReducer (state = initialState, action) {
     return {...state}
 }
 
-module.exports = {
-    AuthReducer
-}
+export default AuthReducer

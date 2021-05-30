@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
-const { SPTKeluarReducer } = require('./SPTReducer')
-const { SuratKeluarReducer } = require('./SuratKeluarReducer')
-const { SuratMasukReducer } = require('./SuratMasukReducer')
-const { UndanganMasukReducer } = require('./UndanganMasukReducer')
-const { AuthReducer } = require('./AuthReducer')
+import SPTKeluarReducer from './SPTReducer'
+import SuratKeluarReducer from './SuratKeluarReducer'
+import SuratMasukReducer from './SuratMasukReducer'
+import UndanganMasukReducer from './UndanganMasukReducer'
+import AuthReducer from './AuthReducer'
 
 export default combineReducers({
     AuthReducer,

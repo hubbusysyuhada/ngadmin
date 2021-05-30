@@ -26,6 +26,10 @@ export function USER_LOGIN (param) {
 export function USER_LOGOUT () {
     return (dispatch) => {
         dispatch({type: 'auth/logout'})
+        dispatch({type: 'suratmasuk/fetch', payload: null})
+        dispatch({type: 'undanganmasuk/fetch', payload: null})
+        dispatch({type: 'suratkeluar/fetch', payload: null})
+        dispatch({type: 'spt/fetch', payload: null})
     }
 }
 
