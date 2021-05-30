@@ -76,7 +76,7 @@ export default function Auth () {
     }, [loginError])
 
     useEffect(() => {
-        if (loggedUser.access_token && loggedUser.name && localStorage.getItem('access_token') && localStorage.getItem('year') && localStorage.getItem('name')) {
+        if (loggedUser && loggedUser.access_token && loggedUser.name && localStorage.getItem('access_token') && localStorage.getItem('year') && localStorage.getItem('name')) {
             setOpenSuccess(true)
             setTimeout(() => {
                 setOpenSuccess(false)
