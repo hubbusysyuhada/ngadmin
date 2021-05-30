@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import img64 from '../assets/disposisi.jpg'
 import {jsPDF} from 'jspdf'
 import {
@@ -20,7 +20,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { IoDocumentText } from "react-icons/io5";
 import { IconContext } from 'react-icons'
 import { useDispatch } from 'react-redux'
-import { EDIT_SURAT_MASUK, DELETE_SURAT_MASUK, DELETE_UNDANGAN_MASUK, EDIT_UNDANGAN_MASUK } from '../store/actions'
+import { DELETE_UNDANGAN_MASUK, EDIT_UNDANGAN_MASUK } from '../store/actions'
 import Swal from 'sweetalert2'
 
 function Alert(props) {

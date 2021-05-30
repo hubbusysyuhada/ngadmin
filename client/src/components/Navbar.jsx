@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Tabs, Button } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-import ShoppingCartTwoToneIcon from '@material-ui/icons/ShoppingCartTwoTone';
-import RestorePageTwoToneIcon from '@material-ui/icons/RestorePageTwoTone';
-import RestaurantIcon from '@material-ui/icons/Restaurant';
 import ExitToAppTwoToneIcon from '@material-ui/icons/ExitToAppTwoTone';
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -41,13 +38,6 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
-
-function a11yProps(index) {
-  return {
-    id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  };
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -26,6 +26,4 @@ function SuratMasukReducer (state = initialState, action) {
     return {...state}
 }
 
-module.exports = {
-    SuratMasukReducer
-}
+export default SuratMasukReducer

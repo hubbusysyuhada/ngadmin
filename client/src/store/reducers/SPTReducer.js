@@ -1,5 +1,5 @@
 const initialState = {
-    datas : []
+    datas : null
 }
 
 function SPTKeluarReducer (state = initialState, action) {
@@ -26,6 +26,4 @@ function SPTKeluarReducer (state = initialState, action) {
     return {...state}
 }
 
-module.exports = {
-    SPTKeluarReducer
-}
+export default SPTKeluarReducer

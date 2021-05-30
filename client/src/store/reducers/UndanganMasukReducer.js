@@ -1,5 +1,5 @@
 const initialState = {
-    datas : []
+    datas : null
 }
 
 function UndanganMasukReducer (state = initialState, action) {
@@ -26,6 +26,4 @@ function UndanganMasukReducer (state = initialState, action) {
     return {...state}
 }
 
-module.exports = {
-    UndanganMasukReducer
-}
+export default UndanganMasukReducer
