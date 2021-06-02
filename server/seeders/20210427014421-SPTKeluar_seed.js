@@ -7,6 +7,7 @@ module.exports = {
       let spt = rawData[i]
       spt.createdAt = new Date()
       spt.updatedAt = new Date()
+      spt.File = null
       if (spt.Ditujukan) {
         let tempArr = spt.Ditujukan.split(',')
         spt.Ditujukan = tempArr.map(name => name.trim())
