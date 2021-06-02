@@ -1,5 +1,6 @@
 const {SuratKeluar} = require('../models')
 const {changeDateFormat} = require('../helpers/changeDateFormat')
+const { uploadFileToGoogleDrive, deleteFile, generatePublicUrl } = require('../helpers/googleapis')
 
 class SuratKeluarController {
     static async fetchAll (req, res, next) {
@@ -173,6 +174,26 @@ class SuratKeluarController {
                 message: 'internal server error'
             })
         }
+    }
+
+    static async uploadFile (req, res, next) {
+        const { id } = req.params
+        const currentFile = await SuratKeluar.findByPk(id)
+        if (currentFile.File) {
+            let temp = JSON.parse(currentFile.File)
+            await deleteFile(temp.id)
+        }
+
+        const response = await uploadFileToGoogleDrive(`${new Date().toLocaleDateString().split('/').join('')}-${req.files[0].originalname}`, req.files[0])
+        const link = await generatePublicUrl(response.id)
+        const answer = {
+            id: response.id,
+            download: link.data.webContentLink,
+            lastUpload: req.headers.name
+        }
+        await SuratKeluar.update({File: JSON.stringify(answer)}, {where: {id}})
+
+        res.status(200).json(answer)
     }
 }
 

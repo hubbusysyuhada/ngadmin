@@ -11,6 +11,7 @@ module.exports = {
       }
       surat.updatedAt = new Date()
       surat.createdAt = new Date()
+      surat.File = null
 
       if (typeof surat.NomorSurat === 'number') {
         if (surat.NomorSurat < 10) {

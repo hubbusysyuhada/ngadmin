@@ -256,6 +256,7 @@ export function EDIT_UNDANGAN_MASUK (payload) {
 
 export function FETCH_SURAT_KELUAR () {
     return async (dispatch) => {
+
         let {data} = await axios.get('/suratkeluar', {
             headers: {
                 year: localStorage.getItem('year'),
@@ -264,6 +265,7 @@ export function FETCH_SURAT_KELUAR () {
         })
         for (let i = 0; i < data.length; i++) {
             data[i].index = i
+            if (data[i].File) data[i].File = JSON.parse(data[i].File)
         }
         dispatch({type: 'suratkeluar/fetch', payload: data})
     }
@@ -357,6 +359,21 @@ export function BOOK_SURAT_KELUAR (payload) {
             data[i].index = i
         }
         dispatch({type: 'suratkeluar/fetch', payload: data})
+    }
+}
+
+export function UPLOAD_SURAT_KELUAR (payload) {
+
+    return async (dispatch) => {
+        dispatch({type: 'suratkeluar/uploading'})
+        const response = await axios.post(`/suratkeluar/${payload.id}`, payload.formData, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                name: localStorage.getItem('name')
+            }
+        })
+        payload.File = response.data
+        dispatch({type: 'suratkeluar/uploaded', payload})
     }
 }
 

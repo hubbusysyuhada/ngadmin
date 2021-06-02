@@ -1,5 +1,6 @@
 const initialState = {
-    datas : null
+    datas : null,
+    uploading: false
 }
 
 function SuratKeluarReducer (state = initialState, action) {
@@ -22,6 +23,17 @@ function SuratKeluarReducer (state = initialState, action) {
             }
         }
         return {...state, datas: temp}
+    } else if (type === 'suratkeluar/uploading') {
+        return {...state, uploading: true}
+    } else if (type === 'suratkeluar/uploaded') {
+
+        let temp = JSON.parse(JSON.stringify(state.datas))
+        for (let i = 0; i < temp.length; i++) {
+            if (temp[i].id === payload.id) {
+                temp[i].File = payload.File
+            }
+        }
+        return {...state, uploading: false, datas: temp}
     }
     return {...state}
 }
