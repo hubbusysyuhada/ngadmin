@@ -65,9 +65,6 @@ export default function Auth () {
         year: ''
     })
 
-    console.log(loggedUser, '<<<< logged user');
-    console.log(openSuccess, '<<<< open success');
-
     useEffect(() => {
         if (loginError) {
             setOpenError(true)
