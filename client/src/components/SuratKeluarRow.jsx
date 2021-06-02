@@ -23,8 +23,8 @@ import {
 import { IconContext } from 'react-icons'
 import { makeStyles } from '@material-ui/core/styles'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import MuiAlert from '@material-ui/lab/Alert';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import MuiAlert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux'
 import { EDIT_SURAT_KELUAR, DELETE_SURAT_KELUAR, UPLOAD_SURAT_KELUAR } from '../store/actions'
 import Swal from 'sweetalert2'
@@ -149,8 +149,6 @@ export default function Restaurant ({props}) {
                 window.open(`${props.File.download}`)
             }
         })
-        // console.log(props.File);
-        // console.log(props.File.download, '<<< props');
     }
 
     return (
@@ -411,7 +409,7 @@ export default function Restaurant ({props}) {
                     if (filePath) {
                         const formData = new FormData()
                         formData.append('file', filePath)
-                        formData.append('name', `${new Date()} -- ${filePath.name}`)
+                        formData.append('name', `${new Date()} -- ${props.NomorSurat}`)
                         const payload = {
                             formData,
                             id: props.id

@@ -1,5 +1,6 @@
 const initialState = {
-    datas : null
+    datas : null,
+    uploading: false
 }
 
 function SPTKeluarReducer (state = initialState, action) {
@@ -22,6 +23,17 @@ function SPTKeluarReducer (state = initialState, action) {
             }
         }
         return {...state, datas: temp}
+    } else if (type === 'spt/uploading') {
+        return {...state, uploading: true}
+    } else if (type === 'spt/uploaded') {
+
+        let temp = JSON.parse(JSON.stringify(state.datas))
+        for (let i = 0; i < temp.length; i++) {
+            if (temp[i].id === payload.id) {
+                temp[i].File = payload.File
+            }
+        }
+        return {...state, uploading: false, datas: temp}
     }
     return {...state}
 }

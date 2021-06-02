@@ -490,3 +490,18 @@ export function DELETE_SPT (props) {
         dispatch({type: 'spt/delete', payload: props})
     }
 }
+
+export function UPLOAD_SPT (payload) {
+
+    return async (dispatch) => {
+        dispatch({type: 'spt/uploading'})
+        const response = await axios.post(`/spt/${payload.id}`, payload.formData, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                name: localStorage.getItem('name')
+            }
+        })
+        payload.File = response.data
+        dispatch({type: 'spt/uploaded', payload})
+    }
+}

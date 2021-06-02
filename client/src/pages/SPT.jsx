@@ -188,7 +188,7 @@ export default function SPT () {
                                                     </TableCell>
                                                     <TableCell
                                                         align={'right'}
-                                                        style={{ width: '40%', textAlign: 'center' }}
+                                                        style={{ width: '35%', textAlign: 'center' }}
                                                     >
                                                         Nomor Surat
                                                     </TableCell>
@@ -197,6 +197,10 @@ export default function SPT () {
                                                         style={{ width: '40%', textAlign: 'center' }}
                                                     >Dalam Rangka
                                                     </TableCell>
+                                                    <TableCell
+                                                        align={'right'}
+                                                        style={{ width: '5%', textAlign: 'center' }}
+                                                    />
                                                 </TableRow>
                                                 </TableHead>
                                                 <TableBody>
