@@ -1,11 +1,10 @@
 const { google } = require('googleapis')
-const CLIENT_ID = '995660962769-end20evrvhe4bjgtqtn1kvibb33lvo0p.apps.googleusercontent.com'
-const CLIENT_SECRET = 'N8Vapg9_QOul6nlo6ap9ETlv'
-const REDIRECT_URI = 'https://developers.google.com/oauthplayground'
-const REFRESH_TOKEN = '1//04KqE7jkDOl13CgYIARAAGAQSNwF-L9IrEYsE3s4n9BkiIG1OA1lg648RSIVR-mikgriihfA6_bLVVhCCBkw_NWrSWhKiJ4fJ3wM'
+const CLIENT_ID = process.env.CLIENT_ID
+const CLIENT_SECRET = process.env.CLIENT_SECRET
+const REDIRECT_URI = process.env.REDIRECT_URI
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN
 const path = require('path')
 const fs = require('fs')
-const mime = require('mime-types')
 
 
 const oauth2Client = new google.auth.OAuth2(
