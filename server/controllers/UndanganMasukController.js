@@ -1,5 +1,6 @@
 const { changeDateFormat } = require('../helpers/changeDateFormat');
 const {UndanganMasuk} = require('../models')
+const { uploadFileToGoogleDrive, deleteFile, generatePublicUrl } = require('../helpers/googleapis')
 
 class UndanganMasukController {
     static fetchAll (req, res, next) {
@@ -9,6 +10,7 @@ class UndanganMasukController {
                 data.forEach(surat => {
                     surat.DisposisiSeksie = JSON.parse(surat.DisposisiSeksie)
                     surat.DisposisiStaff = JSON.parse(surat.DisposisiStaff)
+                    if (surat.File) surat.File = JSON.parse(surat.File)
                 });
 
                 data = data.filter(surat => surat.Tanggal.includes(String(year)))
@@ -120,6 +122,27 @@ class UndanganMasukController {
                 message: 'internal server error'
             })
         }
+    }
+
+    static async uploadFile (req, res, next) {
+        const { id } = req.params
+        const currentFile = await UndanganMasuk.findByPk(id)
+        if (currentFile.File) {
+            let temp = JSON.parse(currentFile.File)
+            await deleteFile(temp.id)
+        }
+
+        const response = await uploadFileToGoogleDrive(`${new Date().toLocaleDateString().split('/').join('')}-${req.files[0].originalname}`, req.files[0])
+        const link = await generatePublicUrl(response.id)
+        const answer = {
+            id: response.id,
+            download: link.data.webViewLink,
+            // download: link.data.webContentLink,
+            lastUpload: req.headers.name
+        }
+        await UndanganMasuk.update({File: JSON.stringify(answer)}, {where: {id}})
+
+        res.status(200).json(answer)
     }
 }
 

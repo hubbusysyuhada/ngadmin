@@ -189,12 +189,12 @@ export default function SuratMasuk () {
                                                     </TableCell>
                                                     <TableCell
                                                         align={'right'}
-                                                        style={{ width: '40%', textAlign: 'center' }}
+                                                        style={{ width: '35%', textAlign: 'center' }}
                                                     >Perihal
                                                     </TableCell>
                                                     <TableCell
                                                         align={'right'}
-                                                        style={{ width: '5%', textAlign: 'center' }}
+                                                        style={{ width: '10%', textAlign: 'center' }}
                                                     />
                                                 </TableRow>
                                                 </TableHead>

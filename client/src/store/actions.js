@@ -162,6 +162,21 @@ export function DELETE_SURAT_MASUK (props) {
     }
 }
 
+export function UPLOAD_SURAT_MASUK (payload) {
+
+    return async (dispatch) => {
+        dispatch({type: 'suratmasuk/uploading'})
+        const response = await axios.post(`/suratmasuk/${payload.id}`, payload.formData, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                name: localStorage.getItem('name')
+            }
+        })
+        payload.File = response.data
+        dispatch({type: 'suratmasuk/uploaded', payload})
+    }
+}
+
 // actions undangan masuk
 
 export function FETCH_UNDANGAN_MASUK () {
@@ -249,6 +264,21 @@ export function EDIT_UNDANGAN_MASUK (payload) {
             payload.Tanggal = `${newTanggal[2] < 10 ? newTanggal[2][1] : newTanggal[2]} ${months[newTanggal[1] - 1]} ${newTanggal[0]}`
         }
         dispatch({type: 'undanganmasuk/edit', payload})
+    }
+}
+
+export function UPLOAD_UNDANGAN_MASUK (payload) {
+
+    return async (dispatch) => {
+        dispatch({type: 'undanganmasuk/uploading'})
+        const response = await axios.post(`/undanganmasuk/${payload.id}`, payload.formData, {
+            headers: {
+                access_token: localStorage.getItem('access_token'),
+                name: localStorage.getItem('name')
+            }
+        })
+        payload.File = response.data
+        dispatch({type: 'undanganmasuk/uploaded', payload})
     }
 }
 

@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     DisposisiSeksie: DataTypes.STRING,
     DisposisiStaff: DataTypes.STRING,
     Catatan: DataTypes.TEXT,
-    IsiDisposisi: DataTypes.TEXT
+    IsiDisposisi: DataTypes.TEXT,
+    File: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'SuratMasuk',

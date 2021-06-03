@@ -61,7 +61,7 @@ async function generatePublicUrl (fileId) {
         })
         return await drive.files.get({
             fileId,
-            fields: 'webContentLink'
+            fields: 'webContentLink, webViewLink'
         })
     } catch (error) {
         console.error(error);

@@ -284,9 +284,10 @@ export default function Restaurant ({props}) {
                         value={type}
                         onChange={(e) => {
                             setType(e.target.value)
+                            const temp = editFormValue.NomorSurat.split('.')[1]
                             setEditFormValue({
                                 ...editFormValue,
-                                NomorSurat: `${e.target.value}.${nomor}`
+                                NomorSurat: `${e.target.value}.${temp}`
                             })
                         }}
                         label="Type"

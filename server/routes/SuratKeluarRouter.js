@@ -10,6 +10,6 @@ router.put('/:id', SuratKeluarController.editOne)
 router.post('/new', SuratKeluarController.createNew)
 router.post('/book', SuratKeluarController.bookMany)
 router.delete('/:id', SuratKeluarController.deleteOne)
-router.post('/:id', upload.any() , SuratKeluarController.uploadFile)
+router.post('/:id', upload.any(), SuratKeluarController.uploadFile)
 
 module.exports = router
