@@ -101,6 +101,8 @@ export default function SuratMasuk () {
                 surat.DisposisiSeksie.join('').toLowerCase().includes(filter)
                 ||
                 surat.DisposisiStaff.join('').toLowerCase().includes(filter)
+                ||
+                String(surat.NoAgendaSubdit).includes(filter)
             ))
             setPage(0)
             setFilteredArray(filtered)

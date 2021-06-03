@@ -4,7 +4,7 @@ const {UndanganMasuk} = require('../models')
 class UndanganMasukController {
     static fetchAll (req, res, next) {
         const {year} = req.headers
-        UndanganMasuk.findAll({order: [['id', 'ASC']]})
+        UndanganMasuk.findAll({order: [['id', 'DESC']]})
             .then (data => {
                 data.forEach(surat => {
                     surat.DisposisiSeksie = JSON.parse(surat.DisposisiSeksie)
