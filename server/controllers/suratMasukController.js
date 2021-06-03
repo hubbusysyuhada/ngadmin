@@ -4,7 +4,7 @@ const {SuratMasuk} = require('../models')
 class SuratMasukController {
     static fetchAll (req, res, next) {
         const {year} = req.headers
-        SuratMasuk.findAll({order: [['id', 'ASC']]})
+        SuratMasuk.findAll({order: [['id', 'DESC']]})
             .then (data => {
                 data.forEach(surat => {
                     surat.DisposisiSeksie = JSON.parse(surat.DisposisiSeksie)
