@@ -297,6 +297,7 @@ export function FETCH_SURAT_KELUAR () {
             data[i].index = i
             if (data[i].File) data[i].File = JSON.parse(data[i].File)
         }
+        data.reverse()
         dispatch({type: 'suratkeluar/fetch', payload: data})
     }
 }
@@ -420,6 +421,7 @@ export function FETCH_SPT () {
         for (let i = 0; i < data.length; i++) {
             data[i].index = i
         }
+        data.reverse()
         dispatch({type: 'spt/fetch', payload: data})
     }
 }
