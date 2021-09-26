@@ -1,6 +1,7 @@
 const {SuratKeluar} = require('../models')
 const {changeDateFormat} = require('../helpers/changeDateFormat')
 const { uploadFileToGoogleDrive, deleteFile, generatePublicUrl } = require('../helpers/googleapis')
+const dateLog = require('../helpers/dateLog')
 
 class SuratKeluarController {
     static async fetchAll (req, res, next) {
@@ -52,8 +53,10 @@ class SuratKeluarController {
                 Waktu: req.body.Waktu,
                 Tempat: req.body.Tempat,
                 File: req.body.File,
-                PenyusunKonsep: req.body.PenyusunKonsep
+                PenyusunKonsep: req.body.PenyusunKonsep,
+                logs: req.body.logs
             }
+            answer.logs.push(`${dateLog()} - EDITED by ${req.loggedUser.name}`)
             let temp = answer.NomorSurat.split('/')
             temp[0] = temp[0].split('.')
             const editedDate = answer.TanggalSurat.split('-')
@@ -106,6 +109,7 @@ class SuratKeluarController {
             const {type} = req.body
             answer.NomorSurat = `${type}.${newNumber}/REN/SUBDIT-PWAP/${formattedDate.month}/${formattedDate.year}`
             answer.TanggalSurat = formattedDate.serverDate
+            answer.logs = [ `${dateLog()} - CREATED by ${req.loggedUser.name}` ]
             const response = await SuratKeluar.create(answer)
             res.status(201).json(response)
         } catch (error) {
@@ -145,7 +149,10 @@ class SuratKeluarController {
                     Waktu: '',
                     Tempat: '',
                     File: '',
-                    PenyusunKonsep: ''
+                    PenyusunKonsep: '',
+                    logs: [
+                        `${dateLog()} - BOOKED by ${req.loggedUser.name}`
+                    ]
                 }
                 answer.push(temp)
             }
@@ -183,7 +190,6 @@ class SuratKeluarController {
             let temp = JSON.parse(currentFile.File)
             await deleteFile(temp.id)
         }
-
         const response = await uploadFileToGoogleDrive(`${new Date().toLocaleDateString().split('/').join('')}-${req.files[0].originalname}`, req.files[0])
         const link = await generatePublicUrl(response.id)
         const answer = {
@@ -191,7 +197,10 @@ class SuratKeluarController {
             download: link.data.webContentLink,
             lastUpload: req.headers.name
         }
-        await SuratKeluar.update({File: JSON.stringify(answer)}, {where: {id}})
+        const logs = currentFile.File ?
+        [...currentFile.logs, `${dateLog()} - FILE CHANGED by ${req.loggedUser.name}`]
+        : [...currentFile.logs, `${dateLog()} - FILE UPLOADED by ${req.loggedUser.name}`]
+        await SuratKeluar.update({File: JSON.stringify(answer), logs}, {where: {id}})
 
         res.status(200).json(answer)
     }

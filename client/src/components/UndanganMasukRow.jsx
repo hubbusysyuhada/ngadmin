@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import img64 from '../assets/disposisi.jpg'
 import {jsPDF} from 'jspdf'
 import {
@@ -14,30 +14,49 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle
+    DialogTitle,
+    Backdrop,
+    CircularProgress
 } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert';
-import { IoDocumentText } from "react-icons/io5";
+import { makeStyles } from '@material-ui/core/styles';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { AiFillPrinter } from 'react-icons/ai'
+import { BsClockHistory } from 'react-icons/bs'
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { IconContext } from 'react-icons'
-import { useDispatch } from 'react-redux'
-import { DELETE_UNDANGAN_MASUK, EDIT_UNDANGAN_MASUK } from '../store/actions'
+import { useDispatch, useSelector } from 'react-redux'
+import { DELETE_UNDANGAN_MASUK, EDIT_UNDANGAN_MASUK, UPLOAD_UNDANGAN_MASUK } from '../store/actions'
 import Swal from 'sweetalert2'
+
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
+  }));
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function Restaurant ({props}) {
+    const classes = useStyles()
     const dispatch = useDispatch()
+    const uploading = useSelector(state => state.UndanganMasukReducer.uploading)
     const [openEditDialog, setOpenEditDialog] = useState(false)
     const [openEditSuccessSnackbar, setOpenEditSuccessSnackbar] = useState(false)
     const [openEditErrorSnackbar, setOpenEditErrorSnackbar] = useState(false)
+    const [openUploadDialog, setOpenUploadDialog] = useState(false)
+    const [openLogsDialog, setOpenLogsDialog] = useState(false)
+    const [backdropOpen, setBackdropOpen] = useState(false)
     const [open, setOpen] = useState({
         id: null,
         status: false
     });
     const [editFormValue, setEditFormValue] = useState(null)
-    
+    const [filePath, setFilePath] = useState(null)
+
     const handleEditClickOpen = () => {
         setOpenEditDialog(true);
     };
@@ -53,6 +72,12 @@ export default function Restaurant ({props}) {
         setOpenEditSuccessSnackbar(false);
         setOpenEditErrorSnackbar(false)
     };
+
+    useEffect(() => {
+        if (!uploading) {
+            setBackdropOpen(false)
+        }
+    }, [uploading])
 
     function printDispo (event) {
         event.preventDefault()
@@ -136,6 +161,28 @@ export default function Restaurant ({props}) {
         })
     }
 
+    function downloadFile (e) {
+        e.preventDefault()
+        Swal.fire({
+            icon: 'question',
+            title: `Download ${props.NoAgendaSubdit}?`,
+            text: `Terakhir diunggah oleh ${props.File.lastUpload}`,
+            showDenyButton: true,
+            confirmButtonText: `YES`,
+            denyButtonText: `NO`,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+              },
+              hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+              }
+        }).then(({isConfirmed}) => {
+            if (isConfirmed) {
+                window.open(`${props.File.download}`)
+            }
+        })
+    }
+
     return (
         <>
             <TableRow key={props.id} >
@@ -154,17 +201,35 @@ export default function Restaurant ({props}) {
                 <TableCell align="left" onClick={openCollapsible}>
                     {props.Perihal}
                 </TableCell>
-                <TableCell align="left">
+                <TableCell align="center">
                     <IconContext.Provider value={{size: '20px'}}>
                         <a
                         href="#"
                         style={{
                             textDecoration: 'none',
                             color: 'black',
+                            margin: '5px'
                         }}
                         onClick={printDispo}
-                        ><IoDocumentText/></a>
+                        ><AiFillPrinter/></a>
                     </IconContext.Provider>
+                    {
+                        props.File
+                        ? 
+                        <IconContext.Provider value={{size: '20px'}}>
+                            <a
+                            href="#"
+                            style={{
+                                textDecoration: 'none',
+                                color: 'black',
+                                margin: '5px'
+                            }}
+                            onClick={downloadFile}
+                            ><CloudDownloadIcon/></a>
+                        </IconContext.Provider>
+                        :
+                        ''                   
+                    }
                 </TableCell>
             </TableRow>
 
@@ -217,6 +282,19 @@ export default function Restaurant ({props}) {
                     </Typography>
                     <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
                     <div style={{textAlign: 'right', paddingRight: '2%'}}>
+                        <IconContext.Provider value={{size: '15px'}}>
+                            <a
+                            href="#"
+                            style={{
+                                textDecoration: 'none',
+                                color: 'black',
+                                marginLeft: '30px',
+                                float: 'left'
+                            }}
+                            onClick={(e) => {e.preventDefault();setOpenLogsDialog(true)}}
+                            ><BsClockHistory/></a>
+                        </IconContext.Provider>
+                        <Button variant="contained" color="primary" startIcon={<CloudUploadIcon />} onClick={() => setOpenUploadDialog(true)} style={{height: '30px', marginRight: '10px'}}>UPLOAD FILE</Button>
                         <Button variant="contained" color="secondary" onClick={deleteUndangan} style={{height: '30px', marginRight: '10px'}}>DELETE</Button>
                         <Button variant="contained" color="primary" onClick={handleEditClickOpen} style={{height: '30px'}}>EDIT</Button>
                     </div>
@@ -419,7 +497,8 @@ export default function Restaurant ({props}) {
                         DisposisiStaff: newDispoStaff,
                         DisposisiSeksie: newDispoSeksie,
                         id: props.id,
-                        NoAgendaSubdit: props.NoAgendaSubdit
+                        NoAgendaSubdit: props.NoAgendaSubdit,
+                        logs: props.logs
                     })
                     let flag = true
                     if (payload.Tanggal === '-' || payload.TanggalSurat === '-') flag = false
@@ -450,6 +529,81 @@ export default function Restaurant ({props}) {
                 </Button>
                 </DialogActions>
             </Dialog>
+
+            <Dialog open={openUploadDialog} onClose={() => setOpenUploadDialog(false)} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Upload Undangan No.{<br/>}{props.NomorSurat}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        disabled
+                        type="text"
+                        value={!filePath ? 'Belum memilih file' : filePath.name}
+                        helperText="Gunakan .zip jika ingin meng-upload lebih dari 1 file"
+                        fullWidth
+                    />
+                    <Button
+                        variant="contained"
+                        component="label"
+                        onChange={e => {
+                            setFilePath(e.target.files[0])
+                        }}
+                    >
+                        Pilih File
+                        <input
+                            type="file"
+                            hidden
+                        />
+                    </Button>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => setOpenUploadDialog(false)} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={(event) => {
+                    event.preventDefault()
+                    if (filePath) {
+                        const formData = new FormData()
+                        formData.append('file', filePath)
+                        formData.append('name', `${new Date()} -- ${props.NomorSurat}`)
+                        const payload = {
+                            formData,
+                            ...props
+                        }
+                        setOpenUploadDialog(false)
+                        setBackdropOpen(true)
+                        dispatch(UPLOAD_UNDANGAN_MASUK(payload))
+                        setFilePath(null)
+                    }
+                    
+                }} color="primary">
+                    Upload
+                </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openLogsDialog} onClose={() => setOpenLogsDialog(false)} fullWidth aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Daftar Riwayat Disposisi No. {props.id}</DialogTitle>
+                <DialogContent>
+                    <Divider style={{width: '95%', textAlign: 'center', marginBottom: '10px'}}/>
+                    <div style={{minHeight: '50vh', maxHeight: '50vh', overflow: 'scroll'}}>
+                        {props.logs.length > 0 ? props.logs?.map((v,i) => {
+                            return (<p style={{fontFamily: 'monospace'}}>{`${i+1}. ${v}`}</p>)
+                        }) : <p style={{fontFamily: 'monospace'}}>NO HISTORY TRACKED</p>}
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => {setOpenLogsDialog(false)}} color="primary">
+                    Close
+                </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* BACKDROP */}
+            <Backdrop className={classes.backdrop} open={backdropOpen}>
+                <CircularProgress color="inherit" />
+                <br/>
+                <p>loading...</p>
+            </Backdrop>
         </>
     )
 }

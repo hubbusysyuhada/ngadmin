@@ -195,7 +195,7 @@ export default function UndanganMasuk () {
                                                     </TableCell>
                                                     <TableCell
                                                         align={'right'}
-                                                        style={{ width: '20%', textAlign: 'center' }}
+                                                        style={{ width: '15%', textAlign: 'center' }}
                                                     >
                                                         Tujuan
                                                     </TableCell>
@@ -206,7 +206,7 @@ export default function UndanganMasuk () {
                                                     </TableCell>
                                                     <TableCell
                                                         align={'right'}
-                                                        style={{ width: '5%', textAlign: 'center' }}
+                                                        style={{ width: '10%', textAlign: 'center' }}
                                                     />
                                                 </TableRow>
                                                 </TableHead>

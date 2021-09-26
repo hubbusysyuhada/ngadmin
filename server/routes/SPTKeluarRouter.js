@@ -10,6 +10,6 @@ router.put('/:id', SPTKeluarController.editOne)
 router.post('/new', SPTKeluarController.newSPT)
 router.post('/book', SPTKeluarController.bookSPT)
 router.delete('/:id', SPTKeluarController.deleteOne)
-router.post('/:id', upload.any() , SPTKeluarController.uploadFile)
+router.post('/:id', upload.any(), SPTKeluarController.uploadFile)
 
 module.exports = router

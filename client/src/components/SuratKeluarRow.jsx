@@ -25,6 +25,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import MuiAlert from '@material-ui/lab/Alert';
+import { BsClockHistory } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { EDIT_SURAT_KELUAR, DELETE_SURAT_KELUAR, UPLOAD_SURAT_KELUAR } from '../store/actions'
 import Swal from 'sweetalert2'
@@ -47,6 +48,7 @@ export default function Restaurant ({props}) {
     const [openEditDialog, setOpenEditDialog] = useState(false)
     const [openEditSuccessSnackbar, setOpenEditSuccessSnackbar] = useState(false)
     const [openUploadDialog, setOpenUploadDialog] = useState(false)
+    const [openLogsDialog, setOpenLogsDialog] = useState(false)
     let [nomor, setNomor] = useState(props.NomorSurat.split('.')[1])
     let [type, setType] = useState(props.NomorSurat.split('.')[0])
     const [openEditErrorSnackbar, setOpenEditErrorSnackbar] = useState(false)
@@ -212,6 +214,18 @@ export default function Restaurant ({props}) {
                     </Typography>
                     <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
                     <div style={{textAlign: 'right', paddingRight: '2%'}}>
+                        <IconContext.Provider value={{size: '15px'}}>
+                            <a
+                            href="#"
+                            style={{
+                                textDecoration: 'none',
+                                color: 'black',
+                                marginLeft: '30px',
+                                float: 'left'
+                            }}
+                            onClick={(e) => {e.preventDefault();setOpenLogsDialog(true)}}
+                            ><BsClockHistory/></a>
+                        </IconContext.Provider>
                         <Button variant="contained" color="primary" startIcon={<CloudUploadIcon />} onClick={() => setOpenUploadDialog(true)} style={{height: '30px', marginRight: '10px'}}>UPLOAD FILE</Button>
                         <Button variant="contained" color="secondary" onClick={deleteSurat} style={{height: '30px', marginRight: '10px'}}>DELETE</Button>
                         <Button variant="contained" color="primary" onClick={handleEditClickOpen} style={{height: '30px'}}>EDIT</Button>
@@ -284,9 +298,10 @@ export default function Restaurant ({props}) {
                         value={type}
                         onChange={(e) => {
                             setType(e.target.value)
+                            const temp = editFormValue.NomorSurat.split('.')[1]
                             setEditFormValue({
                                 ...editFormValue,
-                                NomorSurat: `${e.target.value}.${nomor}`
+                                NomorSurat: `${e.target.value}.${temp}`
                             })
                         }}
                         label="Type"
@@ -356,7 +371,8 @@ export default function Restaurant ({props}) {
                         ...editFormValue,
                         id: props.id,
                         index: props.index,
-                        type
+                        type,
+                        logs: props.logs
                     })
 
                     handleEditClose()
@@ -412,7 +428,7 @@ export default function Restaurant ({props}) {
                         formData.append('name', `${new Date()} -- ${props.NomorSurat}`)
                         const payload = {
                             formData,
-                            id: props.id
+                            ...props
                         }
                         setOpenUploadDialog(false)
                         setBackdropOpen(true)
@@ -422,6 +438,23 @@ export default function Restaurant ({props}) {
                     
                 }} color="primary">
                     Upload
+                </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openLogsDialog} onClose={() => setOpenLogsDialog(false)} fullWidth aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Daftar Riwayat Surat Keluar No. {props.index + 1}</DialogTitle>
+                <DialogContent>
+                    <Divider style={{width: '95%', textAlign: 'center', marginBottom: '10px'}}/>
+                    <div style={{minHeight: '50vh', maxHeight: '50vh', overflow: 'scroll'}}>
+                        {props.logs.length > 0 ? props.logs?.map((v,i) => {
+                            return (<p style={{fontFamily: 'monospace'}}>{`${i+1}. ${v}`}</p>)
+                        }) : <p style={{fontFamily: 'monospace'}}>NO HISTORY TRACKED</p>}
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => setOpenLogsDialog(false)} color="primary">
+                    Close
                 </Button>
                 </DialogActions>
             </Dialog>

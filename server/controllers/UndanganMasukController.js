@@ -1,6 +1,7 @@
 const { changeDateFormat } = require('../helpers/changeDateFormat');
 const {UndanganMasuk} = require('../models')
-
+const { uploadFileToGoogleDrive, deleteFile, generatePublicUrl } = require('../helpers/googleapis')
+const dateLog = require('../helpers/dateLog')
 class UndanganMasukController {
     static fetchAll (req, res, next) {
         const {year} = req.headers
@@ -9,6 +10,7 @@ class UndanganMasukController {
                 data.forEach(surat => {
                     surat.DisposisiSeksie = JSON.parse(surat.DisposisiSeksie)
                     surat.DisposisiStaff = JSON.parse(surat.DisposisiStaff)
+                    if (surat.File) surat.File = JSON.parse(surat.File)
                 });
 
                 data = data.filter(surat => surat.Tanggal.includes(String(year)))
@@ -58,7 +60,10 @@ class UndanganMasukController {
                 Tempat: req.body.Tempat,
                 Waktu: req.body.Waktu,
                 DisposisiSeksie: "[]",
-                DisposisiStaff: "[]"
+                DisposisiStaff: "[]",
+                logs: [
+                    `${dateLog()} - CREATED by ${req.loggedUser.name}`
+                ]
             }
             UndanganMasuk.create(answer)
                 .then(data => {
@@ -91,9 +96,10 @@ class UndanganMasukController {
                 Waktu: req.body.Waktu,
                 IsiDisposisi: req.body.IsiDisposisi,
                 DisposisiSeksie: req.body.DisposisiSeksie,
-                DisposisiStaff: req.body.DisposisiStaff
+                DisposisiStaff: req.body.DisposisiStaff,
+                logs: req.body.logs
             }
-            
+            answer.logs.push(`${dateLog()} - EDITED by ${req.loggedUser.name}`)
             const data = await UndanganMasuk.update(answer, {where: {id}, returning:true})
             res.status(200).json(data)
             
@@ -111,6 +117,7 @@ class UndanganMasukController {
         try {
             const {id} = req.params
             await UndanganMasuk.destroy({where: {id}})
+            deleteFile(id)
             res.status(200).json({message: 'delete success'})
         } catch (error) {
             console.log(error);
@@ -120,6 +127,29 @@ class UndanganMasukController {
                 message: 'internal server error'
             })
         }
+    }
+
+    static async uploadFile (req, res, next) {
+        const { id } = req.params
+        const currentFile = await UndanganMasuk.findByPk(id)
+        if (currentFile.File) {
+            let temp = JSON.parse(currentFile.File)
+            await deleteFile(temp.id)
+        }
+
+        const response = await uploadFileToGoogleDrive(`${new Date().toLocaleDateString().split('/').join('')}-${req.files[0].originalname}`, req.files[0])
+        const link = await generatePublicUrl(response.id)
+        const answer = {
+            id: response.id,
+            download: link.data.webViewLink,
+            lastUpload: req.headers.name
+        }
+        const logs = currentFile.File ?
+        [...currentFile.logs, `${dateLog()} - FILE CHANGED by ${req.loggedUser.name}`]
+        : [...currentFile.logs, `${dateLog()} - FILE UPLOADED by ${req.loggedUser.name}`]
+        await UndanganMasuk.update({File: JSON.stringify(answer), logs}, {where: {id}})
+
+        res.status(200).json(answer)
     }
 }
 
