@@ -1,6 +1,7 @@
 const { changeDateFormat } = require('../helpers/changeDateFormat');
 const {SuratMasuk} = require('../models')
 const { uploadFileToGoogleDrive, deleteFile, generatePublicUrl } = require('../helpers/googleapis')
+const dateLog = require('../helpers/dateLog')
 
 class SuratMasukController {
     static fetchAll (req, res, next) {
@@ -58,7 +59,10 @@ class SuratMasukController {
                 TanggalSurat: (req.body.TanggalSurat ? changeDateFormat(req.body.TanggalSurat).serverDate : '-'),
                 Perihal: req.body.Perihal ? req.body.Perihal : '-',
                 DisposisiSeksie: "[]",
-                DisposisiStaff: "[]"
+                DisposisiStaff: "[]",
+                logs: [
+                    `${dateLog()} - CREATED by ${req.loggedUser.name}`
+                ]
             }
             SuratMasuk.create(answer)
                 .then(data => {
@@ -89,9 +93,10 @@ class SuratMasukController {
                 Catatan: req.body.Catatan,
                 IsiDisposisi: req.body.IsiDisposisi,
                 DisposisiSeksie: req.body.DisposisiSeksie,
-                DisposisiStaff: req.body.DisposisiStaff
+                DisposisiStaff: req.body.DisposisiStaff,
+                logs: req.body.logs
             }
-            // console.log(answer, '<<< answer');
+            answer.logs.push(`${dateLog()} - EDITED by ${req.loggedUser.name}`)
             answer.DisposisiSeksie = JSON.stringify(answer.DisposisiSeksie)
             answer.DisposisiStaff = JSON.stringify(answer.DisposisiStaff)
             const data = await SuratMasuk.update(answer, {where: {id}, returning:true})
@@ -107,10 +112,10 @@ class SuratMasukController {
     }
 
     static async deleteOne (req, res, next) {
-        console.log('masuk delete');
         try {
             const {id} = req.params
             await SuratMasuk.destroy({where: {id}})
+            deleteFile(id)
             res.status(200).json({message: 'delete success'})
         } catch (error) {
             console.log(error);
@@ -129,16 +134,17 @@ class SuratMasukController {
             let temp = JSON.parse(currentFile.File)
             await deleteFile(temp.id)
         }
-
         const response = await uploadFileToGoogleDrive(`${new Date().toLocaleDateString().split('/').join('')}-${req.files[0].originalname}`, req.files[0])
         const link = await generatePublicUrl(response.id)
         const answer = {
             id: response.id,
             download: link.data.webViewLink,
-            // download: link.data.webContentLink,
             lastUpload: req.headers.name
         }
-        await SuratMasuk.update({File: JSON.stringify(answer)}, {where: {id}})
+        const logs = currentFile.File ?
+            [...currentFile.logs, `${dateLog()} - FILE CHANGED by ${req.loggedUser.name}`]
+            : [...currentFile.logs, `${dateLog()} - FILE UPLOADED by ${req.loggedUser.name}`]
+        await SuratMasuk.update({File: JSON.stringify(answer), logs}, {where: {id}})
 
         res.status(200).json(answer)
     }

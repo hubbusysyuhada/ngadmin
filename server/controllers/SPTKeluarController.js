@@ -1,6 +1,7 @@
 const {SPTKeluar} = require('../models')
 const {changeDateFormat} = require('../helpers/changeDateFormat')
 const { uploadFileToGoogleDrive, deleteFile, generatePublicUrl } = require('../helpers/googleapis')
+const dateLog = require('../helpers/dateLog')
 
 class SPTKeluarController {
     static async fetchAll (req, res, next) {
@@ -51,8 +52,10 @@ class SPTKeluarController {
                 Waktu: req.body.Waktu,
                 Tempat: req.body.Tempat,
                 File: req.body.File,
-                PenyusunKonsep: req.body.PenyusunKonsep
+                PenyusunKonsep: req.body.PenyusunKonsep,
+                logs: req.body.logs
             }
+            answer.logs.push(`${dateLog()} - EDITED by ${req.loggedUser.name}`)
             if (answer.Ditujukan && answer.Ditujukan !== 'booked') {
                 answer.Ditujukan = answer.Ditujukan.split(',')
                 answer.Ditujukan = answer.Ditujukan.map(name => name.trim())
@@ -101,6 +104,7 @@ class SPTKeluarController {
             })
             const formattedDate = changeDateFormat(answer.TanggalSurat)
             answer.NomorSurat = `ST.${newNumber}/REN/SUBDIT-PWAP/${formattedDate.month}/${formattedDate.year}`
+            answer.logs = [ `${dateLog()} - CREATED by ${req.loggedUser.name}` ]
             const response = await SPTKeluar.create(answer)
             res.status(201).json(response)
         } catch (error) {
@@ -142,7 +146,10 @@ class SPTKeluarController {
                     Waktu: 'booked',
                     Tempat: 'booked',
                     File: '',
-                    PenyusunKonsep: ''
+                    PenyusunKonsep: '',
+                    logs: [
+                        `${dateLog()} - BOOKED by ${req.loggedUser.name}`
+                    ]
                 }
                 answer.push(temp)
             }
@@ -190,7 +197,10 @@ class SPTKeluarController {
             download: link.data.webContentLink,
             lastUpload: req.headers.name
         }
-        await SPTKeluar.update({File: JSON.stringify(answer)}, {where: {id}})
+        const logs = currentFile.File ?
+        [...currentFile.logs, `${dateLog()} - FILE CHANGED by ${req.loggedUser.name}`]
+        : [...currentFile.logs, `${dateLog()} - FILE UPLOADED by ${req.loggedUser.name}`]
+        await SPTKeluar.update({File: JSON.stringify(answer), logs}, {where: {id}})
 
         res.status(200).json(answer)
     }

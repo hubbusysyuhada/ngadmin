@@ -1,4 +1,7 @@
 import { axios } from '../helpers/axios'
+const dateLog = () => {
+    return new Date().toLocaleString('fr-FR', {timeZone: 'Asia/Jakarta'}).split(',').join(' ')
+}
 
 // actions user/auth
 
@@ -92,8 +95,6 @@ export function FETCH_SURAT_MASUK () {
 
 export function EDIT_SURAT_MASUK (payload) {
     return (dispatch) => {
-        
-        // axios di sini sebelum reassign bentuk tanggal baru
         axios.put(`/suratmasuk/${payload.id}`, {
             Tanggal: payload.Tanggal,
             NoAgendaSubdit: payload.NoAgendaSubdit,
@@ -106,7 +107,8 @@ export function EDIT_SURAT_MASUK (payload) {
             DisposisiSeksie: payload.DisposisiSeksie,
             DisposisiStaff: payload.DisposisiStaff,
             Catatan: payload.Catatan,
-            IsiDisposisi: payload.IsiDisposisi
+            IsiDisposisi: payload.IsiDisposisi,
+            logs: payload.logs
         }, {
             headers: {
                 access_token: localStorage.getItem('access_token')
@@ -121,6 +123,7 @@ export function EDIT_SURAT_MASUK (payload) {
             let newTanggal = payload.Tanggal.split('-')
             payload.Tanggal = `${newTanggal[2] < 10 ? newTanggal[2][1] : newTanggal[2]} ${months[newTanggal[1] - 1]} ${newTanggal[0]}`
         }
+        payload.logs.push(`${dateLog()} - EDITED by ${localStorage.name}`)
         dispatch({type: 'suratmasuk/edit', payload})
     }
 }
@@ -162,8 +165,7 @@ export function DELETE_SURAT_MASUK (props) {
     }
 }
 
-export function UPLOAD_SURAT_MASUK (payload) {
-
+export function UPLOAD_SURAT_MASUK (payload) {    
     return async (dispatch) => {
         dispatch({type: 'suratmasuk/uploading'})
         const response = await axios.post(`/suratmasuk/${payload.id}`, payload.formData, {
@@ -172,6 +174,8 @@ export function UPLOAD_SURAT_MASUK (payload) {
                 name: localStorage.getItem('name')
             }
         })
+        if (payload.File) payload.logs.push(`${dateLog()} - FILE CHANGED by ${localStorage.name}`)
+        else payload.logs.push(`${dateLog()} - FILE UPLOADED by ${localStorage.name}`)
         payload.File = response.data
         dispatch({type: 'suratmasuk/uploaded', payload})
     }
@@ -232,8 +236,7 @@ export function DELETE_UNDANGAN_MASUK (props) {
 
 export function EDIT_UNDANGAN_MASUK (payload) {
     return (dispatch) => {
-        
-        // axios di sini sebelum reassign bentuk tanggal baru
+
         axios.put(`/undanganmasuk/${payload.id}`, {
             Tanggal: payload.Tanggal,
             NoAgendaSubdit: payload.NoAgendaSubdit,
@@ -248,7 +251,8 @@ export function EDIT_UNDANGAN_MASUK (payload) {
             Catatan: payload.Catatan,
             IsiDisposisi: payload.IsiDisposisi,
             Tempat: payload.Tempat,
-            Waktu: payload.Waktu
+            Waktu: payload.Waktu,
+            logs: payload.logs
         }, {
             headers: {
                 access_token: localStorage.getItem('access_token')
@@ -263,6 +267,7 @@ export function EDIT_UNDANGAN_MASUK (payload) {
             let newTanggal = payload.Tanggal.split('-')
             payload.Tanggal = `${newTanggal[2] < 10 ? newTanggal[2][1] : newTanggal[2]} ${months[newTanggal[1] - 1]} ${newTanggal[0]}`
         }
+        payload.logs.push(`${dateLog()} - EDITED by ${localStorage.name}`)
         dispatch({type: 'undanganmasuk/edit', payload})
     }
 }
@@ -277,6 +282,8 @@ export function UPLOAD_UNDANGAN_MASUK (payload) {
                 name: localStorage.getItem('name')
             }
         })
+        if (payload.File) payload.logs.push(`${dateLog()} - FILE CHANGED by ${localStorage.name}`)
+        else payload.logs.push(`${dateLog()} - FILE UPLOADED by ${localStorage.name}`)
         payload.File = response.data
         dispatch({type: 'undanganmasuk/uploaded', payload})
     }
@@ -304,7 +311,6 @@ export function FETCH_SURAT_KELUAR () {
 
 export function EDIT_SURAT_KELUAR (payload) {
     return (dispatch) => {
-        // axios di sini sebelum reassign bentuk tanggal baru
         axios.put(`/suratkeluar/${payload.id}`, {
             TanggalSurat: payload.TanggalSurat,
             NomorSurat: payload.NomorSurat,
@@ -314,6 +320,7 @@ export function EDIT_SURAT_KELUAR (payload) {
             Waktu: payload.Waktu,
             Tempat: payload.Tempat,
             PenyusunKonsep: payload.PenyusunKonsep,
+            logs: payload.logs
         }, {
             headers: {
                 access_token: localStorage.getItem('access_token')
@@ -324,6 +331,7 @@ export function EDIT_SURAT_KELUAR (payload) {
             let newTanggalSurat = payload.TanggalSurat.split('-')
             payload.TanggalSurat = `${newTanggalSurat[2] < 10 ? newTanggalSurat[2][1] : newTanggalSurat[2]} ${months[newTanggalSurat[1] - 1]} ${newTanggalSurat[0]}`
         }
+        payload.logs.push(`${dateLog()} - EDITED by ${localStorage.name}`)
         dispatch({type: 'suratkeluar/edit', payload})
     }
 }
@@ -361,6 +369,7 @@ export function ADD_SURAT_KELUAR (payload) {
                 access_token: localStorage.getItem('access_token')
             }
         })
+        data.reverse()
         for (let i = 0; i < data.length; i++) {
             data[i].index = i
         }
@@ -386,6 +395,7 @@ export function BOOK_SURAT_KELUAR (payload) {
                 access_token: localStorage.getItem('access_token')
             }
         })
+        data.reverse()
         for (let i = 0; i < data.length; i++) {
             data[i].index = i
         }
@@ -403,6 +413,8 @@ export function UPLOAD_SURAT_KELUAR (payload) {
                 name: localStorage.getItem('name')
             }
         })
+        if (payload.File) payload.logs.push(`${dateLog()} - FILE CHANGED by ${localStorage.name}`)
+        else payload.logs.push(`${dateLog()} - FILE UPLOADED by ${localStorage.name}`)
         payload.File = response.data
         dispatch({type: 'suratkeluar/uploaded', payload})
     }
@@ -428,8 +440,11 @@ export function FETCH_SPT () {
 
 export function ADD_SPT (payload) {
     return async (dispatch) => {
-        payload.Ditujukan = JSON.parse(JSON.stringify(payload.Ditujukan)).split(',')
-        for (let i = 0; i < payload.Ditujukan.length; i++) payload.Ditujukan[i] = payload.Ditujukan[i].trim()
+        if (payload.Ditujukan) {
+            payload.Ditujukan = JSON.parse(JSON.stringify(payload.Ditujukan))?.split(',')
+            for (let i = 0; i < payload.Ditujukan.length; i++) payload.Ditujukan[i] = payload.Ditujukan[i].trim()
+        }
+        else payload.Ditujukan = ['booked']
         const months = ['Januari', 'Februari', 'Maret', 'April', 'May', 'Juni', 'Juli', 'August', 'September', 'October', 'November', 'December']
         let temp = payload.TanggalSurat.split('-')
         payload.TanggalSurat = `${temp[2]} ${months[+(temp[1]) - 1]} ${temp[0]}`
@@ -456,6 +471,7 @@ export function ADD_SPT (payload) {
         for (let i = 0; i < data.length; i++) {
             data[i].index = i
         }
+        data.reverse()
         dispatch({type: 'spt/fetch', payload: data})
     }
 }
@@ -480,6 +496,7 @@ export function BOOK_SPT (payload) {
         for (let i = 0; i < data.length; i++) {
             data[i].index = i
         }
+        data.reverse()
         dispatch({type: 'spt/fetch', payload: data})
     }
 }
@@ -498,6 +515,7 @@ export function EDIT_SPT (payload) {
             Waktu: payload.Waktu,
             Tempat: payload.Tempat,
             PenyusunKonsep: payload.PenyusunKonsep,
+            logs: payload.logs
         }, {
             headers: {
                 access_token: localStorage.getItem('access_token')
@@ -506,8 +524,7 @@ export function EDIT_SPT (payload) {
 
         payload.Ditujukan = payload.Ditujukan.split(',')
         payload.Ditujukan.forEach(person => person = person.trim())
-        
-
+        payload.logs.push(`${dateLog()} - EDITED by ${localStorage.name}`)
         dispatch({type: 'spt/edit', payload})
     }
 }
@@ -533,6 +550,8 @@ export function UPLOAD_SPT (payload) {
                 name: localStorage.getItem('name')
             }
         })
+        if (payload.File) payload.logs.push(`${dateLog()} - FILE CHANGED by ${localStorage.name}`)
+        else payload.logs.push(`${dateLog()} - FILE UPLOADED by ${localStorage.name}`)
         payload.File = response.data
         dispatch({type: 'spt/uploaded', payload})
     }

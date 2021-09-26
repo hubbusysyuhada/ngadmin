@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     Waktu: DataTypes.STRING,
     Tempat: DataTypes.STRING,
     File: DataTypes.STRING,
-    PenyusunKonsep: DataTypes.STRING
+    PenyusunKonsep: DataTypes.STRING,
+    logs: DataTypes.JSON
   }, {
     sequelize,
     modelName: 'SPTKeluar',

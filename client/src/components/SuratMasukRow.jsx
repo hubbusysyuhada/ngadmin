@@ -22,6 +22,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { AiFillPrinter } from 'react-icons/ai'
+import { BsClockHistory } from 'react-icons/bs'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { IconContext } from 'react-icons'
 import { useDispatch, useSelector } from 'react-redux'
@@ -47,6 +48,7 @@ export default function Restaurant ({props}) {
     const [openEditSuccessSnackbar, setOpenEditSuccessSnackbar] = useState(false)
     const [openEditErrorSnackbar, setOpenEditErrorSnackbar] = useState(false)
     const [openUploadDialog, setOpenUploadDialog] = useState(false)
+    const [openLogsDialog, setOpenLogsDialog] = useState(false)
     const [backdropOpen, setBackdropOpen] = useState(false)
     const [open, setOpen] = useState({
         id: null,
@@ -270,6 +272,18 @@ export default function Restaurant ({props}) {
                     </Typography>
                     <Divider style={{width: '95%', textAlign: 'center', margin: 'auto', marginTop: '10px', marginBottom: '10px'}}/>
                     <div style={{textAlign: 'right', paddingRight: '2%'}}>
+                        <IconContext.Provider value={{size: '15px'}}>
+                            <a
+                            href="#"
+                            style={{
+                                textDecoration: 'none',
+                                color: 'black',
+                                marginLeft: '30px',
+                                float: 'left'
+                            }}
+                            onClick={(e) => {e.preventDefault(); setOpenLogsDialog(true)}}
+                            ><BsClockHistory/></a>
+                        </IconContext.Provider>
                         <Button variant="contained" color="primary" startIcon={<CloudUploadIcon />} onClick={() => setOpenUploadDialog(true)} style={{height: '30px', marginRight: '10px'}}>UPLOAD FILE</Button>
                         <Button variant="contained" color="secondary" onClick={deleteSurat} style={{height: '30px', marginRight: '10px'}}>DELETE</Button>
                         <Button variant="contained" color="primary" onClick={handleEditClickOpen} style={{height: '30px'}}>EDIT</Button>
@@ -449,7 +463,8 @@ export default function Restaurant ({props}) {
                         DisposisiStaff: newDispoStaff,
                         DisposisiSeksie: newDispoSeksie,
                         id: props.id,
-                        NoAgendaSubdit: props.NoAgendaSubdit
+                        NoAgendaSubdit: props.NoAgendaSubdit,
+                        logs: props.logs
                     })
                     let flag = true
                     if (payload.Tanggal === '-' || payload.TanggalSurat === '-') flag = false
@@ -518,7 +533,7 @@ export default function Restaurant ({props}) {
                         formData.append('name', `${new Date()} -- ${props.NomorSurat}`)
                         const payload = {
                             formData,
-                            id: props.id
+                            ...props
                         }
                         setOpenUploadDialog(false)
                         setBackdropOpen(true)
@@ -532,6 +547,22 @@ export default function Restaurant ({props}) {
                 </DialogActions>
             </Dialog>
 
+            <Dialog open={openLogsDialog} onClose={() => setOpenLogsDialog(false)} fullWidth aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{margin: 'auto', textAlign: 'center'}}>Daftar Riwayat Disposisi No. {props.id}</DialogTitle>
+                <DialogContent>
+                    <Divider style={{width: '95%', textAlign: 'center', marginBottom: '10px'}}/>
+                    <div style={{minHeight: '50vh', maxHeight: '50vh', overflow: 'scroll'}}>
+                        {props.logs.length > 0 ? props.logs?.map((v,i) => {
+                            return (<p style={{fontFamily: 'monospace'}}>{`${i+1}. ${v}`}</p>)
+                        }) : <p style={{fontFamily: 'monospace'}}>NO HISTORY TRACKED</p>}
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => setOpenLogsDialog(false)} color="primary">
+                    Close
+                </Button>
+                </DialogActions>
+            </Dialog>
 
             {/* BACKDROP */}
             <Backdrop className={classes.backdrop} open={backdropOpen}>
